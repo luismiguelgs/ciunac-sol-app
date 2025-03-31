@@ -7,6 +7,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement>{
     name: string;
 	placeholder?: string;
 	type?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
 	control: any;
 	disabled?: boolean;
 	inputRef?: React.RefObject<HTMLInputElement>

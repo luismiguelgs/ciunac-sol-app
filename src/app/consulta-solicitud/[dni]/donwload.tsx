@@ -1,5 +1,4 @@
 'use client'
-import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import pdfImage from '@/assets/pdf.png'

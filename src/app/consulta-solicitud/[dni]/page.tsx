@@ -30,11 +30,18 @@ async function getTextos(){
     }
 }
 
-export default async function ResultadoSolicitudPage({ params }: { params: { dni: string } }) {
-    const {dni} = await params;
+// Add this type definition
+type PageProps = {
+    params: Promise<{
+        dni: string
+    }>
+}
+
+export default async function ResultadoSolicitudPage({ params }: PageProps) {
+    const { dni } = await params; // Remove the await
     const requests = await getRequests(dni);
     const textos = await getTextos();
-
+    
     return (
         <main className="min-h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center bg-slate-100 dark:bg-slate-900">
             <div className="w-full max-w-md p-4 md:max-w-4xl lg:max-w-5xl">
