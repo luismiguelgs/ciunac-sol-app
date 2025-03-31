@@ -1,103 +1,76 @@
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
+const cards = [
+	{ 
+		title: 'Solicitud de Certificados', 
+		image: 'https://images.pexels.com/photos/27001883/pexels-photo-27001883/free-photo-of-ciudad-carretera-trafico-gente.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 
+		link: '/solicitud-certificados' ,
+		content: 'Rellena el formulario con los datos y requisitos correctos. Recogerás presencialmente tu certificado luego de 10 días hábiles'
+	},
+	{ 
+		title: 'Solicitud de Examen de Ubicación', 
+		image: 'https://images.pexels.com/photos/7377687/pexels-photo-7377687.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 
+		link: '/solicitud-ubicacion' ,
+		content: 'Rellena el formulario con los datos y requisitos correctos. Podrás rendir el examen en la fecha publicada en la web'
+	},
+	{ 
+		title: 'Consulta Estado de Solicitud', 
+		image: 'https://images.pexels.com/photos/19593823/pexels-photo-19593823/free-photo-of-paisaje-naturaleza-nubes-bosque.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 
+		link: '/consulta-solicitud' ,
+		content: 'Ingresa tu DNI y verifica si ya está listo para recoger tu certificado de manera presencial con tu cargo'
+	},
+	{ 
+		title: 'Consulta de Certificado', 
+		image: 'https://images.pexels.com/photos/14035701/pexels-photo-14035701.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 
+		link: '/consulta-certificado',
+		content: 'App que puede visualizar el detalle de tu certificado en la página web CIUNAC, se usa un código QR para verificar el certificado'
+	},
+	{ 
+		title: 'Solicitud alumno nuevo', 
+		image: 'https://images.pexels.com/photos/7175572/pexels-photo-7175572.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 
+		link: '/solicitud-nuevo',
+		content: 'Rellena el formulario con los datoscorrectos. Verifica tu correo electrónico para seguir con la matrícula'
+	},
+	{ 
+		title: 'Consulta de Examen de Ubicación', 
+		image: 'https://images.pexels.com/photos/457882/pexels-photo-457882.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 
+		link: '/consulta-ubicacion',
+		content: 'Ingresa tu DNI y verifica tu nivel de ubicación. Podrás descargar también tu constancia de ubicación'
+	},
+];
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+	return (
+		<div className="p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+		{
+			cards.map((card, index) => (
+			<Card key={index}>
+				<CardHeader>
+					<div className="relative w-full h-48 mb-4">
+						<Image
+						src={card.image}
+						alt={card.title}
+						fill
+						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+						className="object-cover rounded-t-lg"
+						/>
+					</div>
+					<CardTitle>{card.title}</CardTitle>
+					<CardDescription></CardDescription>
+					</CardHeader>
+				<CardContent>
+					<p>{card.content}</p>
+				</CardContent>
+				<CardFooter className="flex justify-end">
+					<Button asChild>
+						<Link href={card.link}>Ir a {card.title}</Link>
+					</Button>
+				</CardFooter>
+			</Card>
+			))
+		}
+		</div>
+	)
 }

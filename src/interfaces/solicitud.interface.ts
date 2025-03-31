@@ -1,0 +1,30 @@
+import { Timestamp } from "firebase/firestore";
+
+export default interface Isolicitud {
+    id?:string,
+    tipo_solicitud:string,
+    antiguo:boolean,
+    apellidos:string,
+    nombres:string,
+    img_dni?:string,
+    celular:string,
+    direccion:string,
+    certificado_trabajo?:string,
+    codigo?:string,
+    dni:string,
+    email:string,
+    idioma:string,
+    nivel:string,
+    numero_voucher?:string,
+    facultad?:string,
+    fecha_pago?:string,
+    trabajador:boolean,
+    img_voucher?:string,
+    estado?:string,
+    tipo_trabajador?:string,
+    pago:number,
+    alumno_ciunac?:boolean,
+    img_cert_trabajo?:string,
+    img_cert_estudio?:string,
+    creado?:string | Timestamp
+}
