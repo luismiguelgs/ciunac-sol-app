@@ -13,8 +13,10 @@ export default function Copyright() {
             <Image 
                 src={logoCiunac}
                 alt="CIUNAC Logo"
+                style={{width: 'auto', height: 'auto'}}
                 width={310}
                 height={310}
+                priority
                 className="w-[310px] h-auto"
             />
             <p className="mt-1 text-sm text-muted-foreground text-center">

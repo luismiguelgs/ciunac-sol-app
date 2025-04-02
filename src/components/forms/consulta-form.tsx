@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation"
 import Isolicitud from "@/interfaces/solicitud.interface"
 
 const msg = {
-	required: "El númerode documento es requerido",
+	required: "El número de documento es requerido",
 	invalid: "Ingresar un número de documento válido",
 }
 
@@ -36,9 +36,12 @@ const schema = z.object({
 		.regex(/^[0-9]+$/, {message: msg.invalid}),
 })
 
+type Props = {
+	solicitud: 'CERTIFICADO' | 'EXAMEN'
+}
 
-
-export default function ConsultaForm() {
+export default function ConsultaForm({solicitud}: Props) 
+{
 	const router = useRouter()
 	const [loading, setLoading] = React.useState(false)
 	const [dialog, setDialog] = React.useState<{title: string; description: string; } | null>(null)
@@ -60,17 +63,11 @@ export default function ConsultaForm() {
 			return
 		}else{
 			setLoading(true)
-			
-			const result = await SolicitudesService.searchItemByDni(data.documento) as Isolicitud[];
-			if(result.length > 0){   
-				router.push(`./consulta-solicitud/${data.documento}`)
-				setLoading(false)
+			if(solicitud === 'CERTIFICADO'){
+				buscarSolicitud(data.documento)
 			}else{
-				setOpen(true)
-				setDialog(alert.notFound)
-				setLoading(false)
+				buscarExamenUbicacion(data.documento)
 			}
-			
 		}
 	}
 
@@ -79,7 +76,7 @@ export default function ConsultaForm() {
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<div className="flex flex-col items-center gap-2 text-center">
-						<h1 className="text-3xl font-bold">Consulta de Solicitud</h1>
+						<h1 className="text-3xl font-bold">Consulta de Solicitud de {solicitud === 'EXAMEN' ? 'EXAMEN DE UBICACIÓN' : 'CERTIFICADO'}</h1>
 						<p className="text-balance text-sm text-muted-foreground">
 							Ingresar su Documento de Identidad, y verficar si esta listo para recoger su certificado
 						</p>
@@ -124,4 +121,32 @@ export default function ConsultaForm() {
 			/>
 		</React.Fragment>
 	)
+
+	async function buscarSolicitud(documento: string) {
+		const result = await SolicitudesService.searchItemByDni(documento) as Isolicitud[];
+		if(result.length > 0){   
+			router.push(`./consulta-solicitud/${documento}`)
+		}else{
+			setOpen(true)
+			setDialog(alert.notFound)
+			setLoading(false)
+		}
+	}
+	async function buscarExamenUbicacion(documento: string) {
+		const result = await SolicitudesService.searchItemByDni(documento) as Isolicitud[];
+		if(result.length > 0){   
+			const item = result[0]
+            const queryParams = new URLSearchParams(
+            Object.entries({apellidos: item.apellidos.trim(), nombres: item.nombres.trim()}).reduce((acc, [key, value]) => {
+                	acc[key] = String(value);
+                	return acc;
+            	}, {} as Record<string, string>)
+            ).toString(); 
+            router.push(`./consulta-ubicacion/${documento}?${queryParams}`);
+			}else{
+				setOpen(true)
+				setDialog(alert.notFound)
+				setLoading(false)
+			}
+	}
 }

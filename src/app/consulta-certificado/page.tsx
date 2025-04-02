@@ -1,7 +1,9 @@
-import React from 'react'
+import ConsultaPage from "@/components/consulta-page"
 
 export default function ConsultaCertificadoPage() {
-  return (
-    <div>ConsultaCertificadoPage</div>
-  )
+	return (
+		<ConsultaPage>
+			<></>
+		</ConsultaPage>
+	)
 }

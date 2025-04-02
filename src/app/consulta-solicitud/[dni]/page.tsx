@@ -9,7 +9,7 @@ import { HourglassIcon, CheckCircleIcon, ThumbsUpIcon } from "lucide-react"
 import Image from "next/image"
 import procesoUno from "@/assets/2.png"
 import procesoDos from "@/assets/3.png"
-import Download from "./donwload";
+import Download from "@/modules/consulta-solicitud/components/donwload";
 
 async function getRequests(dni:string){
     try {

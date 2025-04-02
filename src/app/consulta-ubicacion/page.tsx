@@ -1,7 +1,10 @@
-import React from 'react'
+import ConsultaPage from "@/components/consulta-page"
+import ConsultaForm from "@/components/forms/consulta-form"
 
 export default function ConsultaUbicacionPage() {
-  return (
-    <div>ConsultaUbicacionPage</div>
-  )
+	return (
+		<ConsultaPage>
+			<ConsultaForm solicitud='EXAMEN' />
+		</ConsultaPage>
+	)
 }

@@ -50,11 +50,12 @@ export default function Home() {
 				<CardHeader>
 					<div className="relative w-full h-48 mb-4">
 						<Image
-						src={card.image}
-						alt={card.title}
-						fill
-						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-						className="object-cover rounded-t-lg"
+							src={card.image}
+							alt={card.title}
+							priority
+							fill
+							sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+							className="object-cover rounded-t-lg"
 						/>
 					</div>
 					<CardTitle>{card.title}</CardTitle>
