@@ -3,7 +3,7 @@
 import * as React from "react"
 import { format, getMonth, getYear, setMonth, setYear } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
-import { es } from "date-fns/locale"
+import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -107,6 +107,7 @@ export function DatePicker({
                   selected={field.value}
                   onSelect={field.onChange}
                   initialFocus
+				  //weekStartsOn={0}
                   locale={es}
                   month={field.value || new Date()}
                 />

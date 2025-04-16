@@ -33,7 +33,7 @@ export function FinishForm({activeStep, setActiveStep, steps, student, saveNewSt
 {
 	const router = useRouter()
     const [state, setState] = React.useState<'SAVE'|'EMAIL'|'ERROR'>('SAVE')
-	const [message, setMessage] = React.useState<string>('')
+	const [message, setMessage] = React.useState<React.ReactNode>('')
     const [loading, setLoading] = React.useState<boolean>(true)
     const [open, setOpen] = React.useState<boolean>(false)
     
@@ -66,7 +66,7 @@ export function FinishForm({activeStep, setActiveStep, steps, student, saveNewSt
 
 		if(newStudent.data.code === "400") {
 			setState('ERROR')
-			setMessage(`${newStudent.data.message} DNI:${student.Numero_identificacion}. Comuníquese con el administrador
+			setMessage(`<strong>${newStudent.data.message} DNI:${student.Numero_identificacion}.</strong> Comuníquese con el administrador
 				 del sistema al correo: ciunac.alumnosnuevos@unac.edu.pe`)
 			setLoading(false)
 		}
@@ -131,7 +131,7 @@ export function FinishForm({activeStep, setActiveStep, steps, student, saveNewSt
 								Espere por favor, estamos procesando su solicitud. Esto puede tomar unos minutos.
 							</span>
 						</>):(<>
-							<span className="text-sm text-muted-foreground">
+							<span className="text-sm text-muted-foreground font-bold">
 								{message}
 							</span>
 							<Button
