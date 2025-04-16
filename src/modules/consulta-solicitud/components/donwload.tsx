@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import pdfImage from '@/assets/pdf.png'
 import Isolicitud from '@/interfaces/solicitud.interface'
-import CargoPdf from '@/components/pdf/cargo-pdf'
+import CargoPdf from '@/modules/consulta-solicitud/components/cargo-pdf'
 import { pdf } from '@react-pdf/renderer'
 import { Itexto } from '@/interfaces/types.interface'
 

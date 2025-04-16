@@ -40,8 +40,10 @@ export default async function GetCertificatePage({params}:PageProps) {
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-primary mb-8">
                     Detalle de Certificado de Idiomas del CIUNAC
                 </h1>
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Certificate General Information */}
+                    
                     <Card className="shadow-lg relative overflow-hidden">
                         <div className="absolute inset-0 flex items-center justify-center opacity-5">
                             <Image
@@ -84,7 +86,7 @@ export default async function GetCertificatePage({params}:PageProps) {
                             </div>
                         </CardContent>
                     </Card>
-
+                    
                     {/* Certificate Detailed Information */}
                     <Card className="shadow-lg">
                         <CardHeader>

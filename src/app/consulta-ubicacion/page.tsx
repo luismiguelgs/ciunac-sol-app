@@ -1,5 +1,5 @@
 import ConsultaPage from "@/components/consulta-page"
-import ConsultaForm from "@/components/forms/consulta-form"
+import ConsultaForm from "@/components/consulta-form"
 
 export default function ConsultaUbicacionPage() {
 	return (
