@@ -7,9 +7,11 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { HourglassIcon, CheckCircleIcon, ThumbsUpIcon } from "lucide-react"
 import Image from "next/image"
-import procesoUno from "@/assets/2.png"
-import procesoDos from "@/assets/3.png"
+import procesoUno from "@/assets/1.png"
+import procesoDos from "@/assets/2.png"
+import procesoTres from "@/assets/3.png"
 import Download from "@/modules/consulta-solicitud/components/donwload";
+import Subjects from "./subjects";
 
 async function getRequests(dni:string){
     try {
@@ -37,11 +39,23 @@ type PageProps = {
     }>
 }
 
+// Helper function (puede ir dentro o fuera del componente principal)
+const renderStyledText = (text: string | undefined) => {
+    if (!text) return null;
+    const parts = text.split(/(EN PROCESO|PARA RECOGER)/g);
+    return parts.map((part, index) => {
+        if (part === 'EN PROCESO' || part === 'PARA RECOGER') {
+            return <strong key={index} className="font-bold text-blue-600">{part}</strong>;
+        }
+        return <span key={index}>{part}</span>;
+    });
+};
+
 export default async function ResultadoSolicitudPage({ params }: PageProps) {
-    const { dni } = await params; // Remove the await
+    const { dni } = await params;
     const requests = await getRequests(dni);
     const textos = await getTextos();
-    
+
     return (
         <main className="min-h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center bg-slate-100 dark:bg-slate-900">
             <div className="w-full max-w-md p-4 md:max-w-4xl lg:max-w-5xl">
@@ -58,7 +72,8 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                             {textos && (
                                 <Alert>
                                     <AlertDescription>
-                                        {textos.find(objeto => objeto.titulo === 'texto_ubicacion_5')?.texto}
+                                        {/* Usa la función auxiliar aquí */}
+                                        {renderStyledText(textos.find(objeto => objeto.titulo === 'texto_ubicacion_5')?.texto)}
                                     </AlertDescription>
                                 </Alert>
                             )}
@@ -93,15 +108,12 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                                 <p className="text-base text-muted-foreground">
                                                     {item.creado? new Date(item.creado as string).toLocaleDateString('es-ES'): ''}
                                                 </p>
-                                                <p className="text-md text-muted-foreground">
-                                                    Idioma: <span className="font-medium">{item.idioma}</span>{' '}
-                                                    Nivel: <span className="font-medium">{item.nivel}</span>
-                                                </p>
+                                                <Subjects item={item} />
                                             </div>
                                         </div>
                                     </CardHeader>
                                     {item.estado === 'NUEVO' ? (
-                                        <div className="relative h-[80px] w-full">
+                                        <div className="relative h-[320px] w-full">
                                             <Image
                                                 src={procesoUno}
                                                 alt="Proceso"
@@ -111,7 +123,7 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                             />
                                         </div>
                                     ) : item.estado === 'ELABORADO' ? (
-                                        <div className="relative h-[80px] w-full">
+                                        <div className="relative h-[320px] w-full">
                                             <Image
                                                 src={procesoDos}
                                                 alt="Proceso2"
@@ -120,7 +132,17 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                                 className="object-contain"
                                             />
                                         </div>
-                                    ) : null}
+                                    ) : (
+                                        <div className="relative h-[320px] w-full">
+                                            <Image
+                                                src={procesoTres}
+                                                alt="Proceso2"
+                                                fill
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                className="object-contain"
+                                            />
+                                        </div>
+                                    )}
                                     <CardContent>
                                         {textos && <Download item={item} textos={textos} />}
                                     </CardContent>
@@ -133,3 +155,4 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
         </main>
     )
 }
+

@@ -13,6 +13,7 @@ import GeneralDialog from "@/components/dialogs/general-dialog"
 import IStudent from "../interfaces/student.interface"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import EmailService from "@/services/email.service"
 
 const FormSchema = z.object({
     accept: z.boolean(),
@@ -25,11 +26,10 @@ type Props = {
     steps: string[] 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
     saveNewStudent: (student:IStudent) => Promise<any>
-	sendEmail: (student:IStudent) => Promise<void>
 	student: IStudent
 }
 
-export function FinishForm({activeStep, setActiveStep, steps, student, saveNewStudent, sendEmail}:Props) 
+export function FinishForm({activeStep, setActiveStep, steps, student, saveNewStudent}:Props) 
 {
 	const router = useRouter()
     const [state, setState] = React.useState<'SAVE'|'EMAIL'|'ERROR'>('SAVE')
@@ -57,8 +57,8 @@ export function FinishForm({activeStep, setActiveStep, steps, student, saveNewSt
         return () => subscription.unsubscribe();
     }, [form]);
 
-  	async function onSubmit(data: z.infer<typeof FormSchema>) {	
-		console.log(data)
+  	async function onSubmit() {	
+		//console.log(data)
         setLoading(true)
         setOpen(true)
 
@@ -72,7 +72,7 @@ export function FinishForm({activeStep, setActiveStep, steps, student, saveNewSt
 		}
 		else{
 			setState('EMAIL')
-			await sendEmail(student)
+			await EmailService.sendEmailRegister(student)
 			setLoading(false)
 			setOpen(false)
 			router.push('./solicitud-nuevo/finalizar')

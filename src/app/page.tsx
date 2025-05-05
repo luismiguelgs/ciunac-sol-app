@@ -40,6 +40,12 @@ const cards = [
 		link: '/consulta-ubicacion',
 		content: 'Ingresa tu DNI y verifica tu nivel de ubicación. Podrás descargar también tu constancia de ubicación'
 	},
+	{ 
+		title: 'Solicitud de BECA CIUNAC', 
+		image: 'https://images.pexels.com/photos/27001883/pexels-photo-27001883/free-photo-of-ciudad-carretera-trafico-gente.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 
+		link: '/solicitud-beca',
+		content: 'Ingresa tus datos y requisitos para solicitar tu beca'
+	},
 ];
 export default function Home() {
 	return (

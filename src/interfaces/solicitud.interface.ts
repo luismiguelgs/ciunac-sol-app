@@ -6,6 +6,8 @@ export default interface Isolicitud {
     antiguo:boolean,
     apellidos:string,
     nombres:string,
+    tipo_documento?:'PE01' | 'PE02',
+    escuela?: string,
     img_dni?:string,
     celular:string,
     direccion:string,

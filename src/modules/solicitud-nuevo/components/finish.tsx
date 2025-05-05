@@ -7,7 +7,6 @@ import MyAlert from "@/components/forms/myAlert"
 import { FinishForm } from "./finish-form"
 import DataDetail from "./data-detail"
 import Link from "next/link"
-
 import React from "react"
 
 type Props = {
@@ -52,7 +51,6 @@ export default function Finish({ programs, activeStep, setActiveStep, steps}:Pro
                 steps={steps}
                 student={student}
                 saveNewStudent={saveNewStudent}
-                sendEmail={sendEmail}
             />
             
         </div>
@@ -78,25 +76,6 @@ export default function Finish({ programs, activeStep, setActiveStep, steps}:Pro
                 return data;
             } else {
                 console.error('Failed to send student', await response.json());
-            }
-        }catch(error){
-            console.error('An error occurred while sending the email:', error);
-        }
-    }
-    async function sendEmail(student:IStudent) {
-        try{
-            const response =  await fetch('/api/email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify({ type: 'REGISTER', email: student.Email, user: student.Numero_identificacion })
-            })
-            if (response.ok) {
-                console.log('Email registration sent successfully');
-            } else {
-                console.error('Failed to send registration email');
             }
         }catch(error){
             console.error('An error occurred while sending the email:', error);

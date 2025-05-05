@@ -1,28 +1,20 @@
-import React from "react"
-import { Button } from "@/components/ui/button"
-import { CheckCircle } from "lucide-react"
-import Image from "next/image"
-import ReCAPTCHA from "react-google-recaptcha"
-import { Form } from "@/components/ui/form"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { initialValues, IVerificationSchema, verificationSchema } from "../schemas/verificacion.schema"
-import { StepperControl } from "@/components/stepper"
-import { toast } from "sonner"
-import MyAlert from "@/components/forms/myAlert"
-import MyInputOpt from "@/components/forms/input.otp"
-import InputField from "@/components/forms/input.field"
-import EmailService from "@/services/email.service"
+'use client'
+import InputField from '@/components/forms/input.field'
+import { zodResolver } from '@hookform/resolvers/zod';
+import React from 'react'
+import ReCAPTCHA from 'react-google-recaptcha';
+import { useForm } from 'react-hook-form'
+import { initialValues, verificationSchema } from '../schemas/verification.schema';
+import { Form } from '@/components/ui/form';
+import { Button } from '@/components/ui/button';
+import { CheckCircle, Send } from "lucide-react"
+import { useRouter } from 'next/navigation'; // 1. Importa useRouter
+import { toast } from 'sonner';
+import MyInputOpt from '@/components/forms/input.otp';
 
-type Props = {
-    activeStep: number;
-    steps: string[];
-    setActiveStep: React.Dispatch<React.SetStateAction<number>>; 
-    handleNext: (data: IVerificationSchema) => void;
-}
-
-export default function Verification({activeStep, steps, setActiveStep, handleNext}: Props) 
+export default function FormEmail() 
 {
+    const router = useRouter(); // 2. Inicializa el router
     const [disabled, setDisabled] = React.useState<boolean>(false);
     const [timeLeft, setTimeLeft] = React.useState<number | null>(null);
 
@@ -33,21 +25,24 @@ export default function Verification({activeStep, steps, setActiveStep, handleNe
         defaultValues: initialValues,
     })
 
-    const onSubmit = async (data: IVerificationSchema) => {
+    const onSubmit = async (data: typeof initialValues) => {
         if(!captchaRef.current?.getValue()){
             toast.warning('Advertencia',{description: 'Por favor, confirme que no eres un robot'})
-           
+
         }else{
             const verificationNumber = String(getVerificationNumber()).trim();
-            
+
             if(verificationNumber === data.code){
-                handleNext(data)
+                // 3. Redirige a la siguiente página con el email en la URL
+                const email = data.email;
+                router.push(`/solicitud-beca/proceso?email=${encodeURIComponent(email)}`);
             }
             else{
                 toast.warning('Advertencia',{description: 'El código de verificación es incorrecto'})
             }
         }
     }
+
     const formatTime = (seconds: number) => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
@@ -72,42 +67,19 @@ export default function Verification({activeStep, steps, setActiveStep, handleNe
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="p-4">
-                <h2 className="text-2xl font-bold uppercase text-center mb-6">
-                    Verificación de correo electrónico
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Left Column */}
+                <div className="space-y-6 pt-3">
+                    <InputField
+                        control={form.control}
+                        name='email'
+                        type="email"
+                        disabled={disabled}
+                    />
                     <div className="flex flex-col items-center space-y-4">
-                        <Image 
-                            src="/images/email-verification.png" 
-                            alt="logo" 
-                            width={190} 
-                            height={190} 
-                        />
-                        <MyAlert 
-                            title="Comprobar tu correo electrónico:"
-                            description={<>
-                                    Ingresa tu correo electrónico y luego haz click en <strong>COMPROBAR</strong>{' '}
-                                    Se te enviará un correo electrónico con un código de verificación.{' '}
-                                    El código deberá ser ingresado en la caja de texto <strong>Código de verificación</strong>{' '}
-                                    En caso no veas el código en tu bandeja principal, puedes verificar en correos no deseados (SPAM).
-                                </>}
-                        />
-                    </div>
-
-                    {/* Right Column */}
-                    <div className="space-y-6 pt-3">
-                        <InputField
-                            control={form.control}
-                            name='email'
-                            type="email"
-                            disabled={disabled}
-                        />
-                        <div className="flex flex-col items-center space-y-4">
                             <Button 
                                 disabled={disabled}
                                 onClick={verifyEmail}
                                 type="button"
+                                variant="outline"
                                 className="w-full md:w-auto"
                             >
                                 <CheckCircle className="mr-2 h-4 w-4" />
@@ -121,32 +93,34 @@ export default function Verification({activeStep, steps, setActiveStep, handleNe
                                 disabled={disabled}
                                 description="Ingresa el código de verificación de 4 dígitos"
                             />
-                        </div>
-
-                        {timeLeft !== null && (
+                    </div>
+                    {timeLeft !== null && (
                             <p className="text-xl text-center mt-4">
                                Tiempo restante: {formatTime(timeLeft)}
                             </p>
                         )}
 
                         <div className="flex justify-center p-6">
-                            <ReCAPTCHA 
-                                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string} 
-                                ref={captchaRef} 
+                            <ReCAPTCHA
+                                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string}
+                                ref={captchaRef}
                             />
                         </div>
-                    </div>
+                {/* Contenedor para centrar el botón */}
+                <div className="flex justify-center">
+                    <Button
+                        //disabled={disabled || timeLeft !== null} // Deshabilitar si el temporizador está activo
+                        type="submit"
+                        className="w-full md:w-auto px-10 py-3 text-md" // Mantenido el padding horizontal (px-10)
+                    >
+                        <Send className="mr-2 h-5 w-5" /> {/* Icono añadido */}
+                        Enviar
+                    </Button>
                 </div>
-                 {/* Botones de navegación */}
-                <StepperControl 
-                    activeStep={activeStep} 
-                    steps={steps} 
-                    setActiveStep={setActiveStep}
-                    type="submit"
-                />
-            </form>
-        </Form>
-    )
+            </div>
+        </form>
+    </Form>
+)
     /**
      * Sends an email verification to the user with a random number.
      * Stores the random number and expiration time in localStorage.
@@ -173,7 +147,23 @@ export default function Verification({activeStep, steps, setActiveStep, handleNe
         localStorage.setItem('verificationNumber', JSON.stringify({ randomNumber, expirationTime }));
 
         // send email verification
-        await EmailService.sendEmailRandom(email, randomNumber);
+        try{
+            const response =  await fetch('/api/email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache'
+                },
+                body: JSON.stringify({ type: 'RANDOM', email: email, number: randomNumber })
+            })
+            if (response.ok) {
+                console.log('Email verification sent successfully');
+            } else {
+                console.error('Failed to send verification email');
+            }
+        }catch(error){
+            console.error('An error occurred while sending the email:', error);
+        }
         
         // disable button after 5 minutes (300,000 ms)
         setTimeout(() => {
@@ -201,3 +191,5 @@ export default function Verification({activeStep, steps, setActiveStep, handleNe
         return ''; // if it does not exist or has expired
     }
 }
+
+

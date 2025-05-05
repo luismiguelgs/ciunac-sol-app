@@ -1,0 +1,48 @@
+import Isolicitud from '@/interfaces/solicitud.interface'; // Assuming this import exists or is needed
+import { create } from 'zustand';
+
+interface StoreState {
+    solicitud: Partial<Isolicitud>; // Use Partial if not all fields are initialized
+    setSolicitudField: (field: keyof Isolicitud, value: unknown) => void;
+    // Add other state/actions if needed
+}
+
+const useSolicitudStore = create<StoreState>((set) => ({
+    solicitud: {
+        tipo_solicitud: 'BECA', // Initialize with default values as needed
+        antiguo: false,
+        apellidos: '',
+        nombres: '',
+        celular: '',
+        direccion: '',
+        codigo: '', // From your mention
+        dni: '',
+        facultad: '',
+        escuela: '',
+        tipo_documento: 'PE01',
+        email: '',
+        idioma: '',
+        nivel: '',
+        trabajador: true,
+        alumno_ciunac: true,
+        pago: 0,
+        estado: 'NUEVO',
+        img_cert_estudio: '',
+        img_dni: '',
+        img_voucher: '',
+        img_cert_trabajo: '',
+        certificado_trabajo: '',
+    },
+    // Add the missing setSolicitudField function
+    setSolicitudField: (field: keyof Isolicitud, value: unknown) => {
+        set((state) => ({
+            solicitud: {
+                ...state.solicitud,
+                [field]: value
+            }
+        }));
+    }
+    // Add other state/actions if needed
+}));
+
+export default useSolicitudStore; // Assuming a default export

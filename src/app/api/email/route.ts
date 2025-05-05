@@ -91,6 +91,27 @@ function getBodyEmail(body:Body){
                 subject:"CIUNAC - REGISTRO EXITOSO",
                 text:`Usted ha sido registrado exitosamente USUARIO: ${body.user} CONTRASEÑA: ${body.user}`
             }
+        case "BECA":
+            return {
+                body:`<!DOCTYPE html>
+                        <html>
+                            ${HEAD}
+                        <body>
+                            <img src="https://ciunac.unac.edu.pe/wp-content/uploads/2024/04/cropped-WhatsApp-Image-2024-04-19-at-2.48.00-PM-2.jpeg" alt="logo" width="200px"/>
+                            <h1>CONFIRMACIÓN DE REGISTRO PARA BECA CIUNAC</h1>
+                            <p>Estimado alumn@:</p>
+                            <p>Le informamos que hemos recibido correctamente su solicitud de beca a través del sistema del CIUNAC.
+                                Nuestro equipo revisará su documentación y, en caso de requerir información adicional, nos pondremos en contacto con usted por este medio.
+                                Agradecemos su interés y participación en el programa de becas.
+                            </p>
+                            <p>Su codigo es: ${body.user}</p>
+                            <hr>
+                            ${FOOTER}
+                        </body>
+                        </html>`,
+                subject:"CIUNAC - CONFIRMACIÓN DE REGISTRO PARA SOLICITUD DE BECA",
+                text:`Ingrese el siguente numero para verificar su correo: ${body.number}`
+            }
     }
     
 }
