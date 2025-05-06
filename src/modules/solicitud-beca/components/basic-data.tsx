@@ -130,10 +130,10 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
                         control={form.control}
                     />
                     <InputField
-                        label="Número de Documento"
+                        label="Número de Documento de Identidad"
                         name="dni"
                         inputRef={dniRef}
-                        placeholder="Ingresar número de documento..."
+                        placeholder="Ingresar número de documento de identidad..."
                         control={form.control}
                     />
                 </div>
