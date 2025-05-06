@@ -25,7 +25,7 @@ export default function ConsultaPage({ children }: ConsultaPageProps)
             </div>
             <div className="relative hidden bg-muted lg:block">
                 <Image
-                    src="/images/splash.png"
+                    src="/images/splash.jpg"
                     alt="Image"
                     width={1920}
                     height={1080}
