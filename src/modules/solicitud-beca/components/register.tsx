@@ -1,7 +1,6 @@
 import { StepperControl } from '@/components/stepper'
 import React from 'react'
 import useStore from "../stores/solicitud.store"
-import waterMark from '@/assets/logo-ciunac-trans.png'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import Image from 'next/image'
 import { Separator } from '@/components/ui/separator'
@@ -20,6 +19,7 @@ import GeneralDialog from '@/components/dialogs/general-dialog'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from "lucide-react"
 import { useRouter } from 'next/navigation'
+import { ExternalLink } from 'lucide-react'; // Asegúrate de importar el icono que deseas usar
 
 function detalleSolicitud(titulo:string, valor:string|undefined, link:boolean = false) {
     return (
@@ -100,7 +100,7 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
                 <Card className="shadow-lg relative overflow-hidden">
                     <div className="absolute inset-0 flex items-center justify-center opacity-5">
                         <Image
-                            src={waterMark}
+                            src='/images/logo-ciunac-trans.png'
                             alt="CIUNAC Logo"
                             fill
                             priority
@@ -143,17 +143,21 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
                         name='info'
                         label="Confirmo que los datos son correctos"
                         control={form.control}
-                        description='Los datos consignados estan correctos y que los documentos adjuntos son los verídicos.'
+                        description='Los datos consignados estan correctos y los documentos adjuntos son los verídicos.'
                     />
                     <div className='mt-4'>
                         <SwithField 
                         name='terminos'
                         label="Acepto los términos y condiciones"
                         control={form.control}
-                        description='Declaro que conozco la reglamentación al respecto sobre becas CIUNAC.'
+                        description='Declaro que conozco el reglamento respecto a becas CIUNAC' 
                         />
                     </div>
-                    
+                    <div className="flex justify-end items-center mt-2">
+                        <Link href='https://ciunac.unac.edu.pe/reglamento/' target="_blank" rel="noopener noreferrer" className="text-blue-500 underline flex items-center">
+                            Ver Reglamento <ExternalLink className="ml-1 w-4 h-4" />
+                        </Link>
+                    </div>
                     <StepperControl 
                         activeStep={activeStep} 
                         steps={steps} 

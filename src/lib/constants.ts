@@ -24,7 +24,7 @@ export const NIVEL = [
 ]
 
 export const ESCUELAS = [
-    {value:'ENFERMERIA',label:'E.PROFESIONAL DE ENFERMERIA', faculdad: 'FCS'},
+    {value:'ENFERMERIA',label:'E.PROFESIONAL DE ENFERMERIA', facultad: 'FCS'},
     {value:'ADMINISTRACION',label:'E.PROFESIONAL DE ADMINISTRACIÓN', facultad: 'FCA'},
     {value:'CONTABILIDAD',label:'E. PROFESIONAL DE CONTABILIDAD', facultad: 'FCC'},
     {value:'ECONOMIA',label:'E.PROFESIONAL DE ECONOMÍA', facultad: 'FCE'},

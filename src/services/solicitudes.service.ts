@@ -36,6 +36,7 @@ export default class SolicitudesService
             apellidos: data.apellidos.toLocaleUpperCase().trim(),
             telefono: data.celular.trim(),
             facultad : data.facultad,
+            escuela: data.escuela || '',
             email: data.email,
             codigo: data.codigo || '',
             trabajador : data.trabajador,
