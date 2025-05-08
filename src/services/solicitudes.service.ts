@@ -77,6 +77,7 @@ export default class SolicitudesService
                 manual:false,
 		        trabajador: data.trabajador,
                 alumno_id: newID,
+                certificado_trabajo: data.certificado_trabajo || '',
                 creado:serverTimestamp(),
                 modificado:serverTimestamp()
             }
