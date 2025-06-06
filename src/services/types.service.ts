@@ -3,7 +3,7 @@ import { firestore } from '@/lib/firebase';
 import { collection, getDocs, Timestamp } from 'firebase/firestore';
 
 type CollectionType = Itexto | Ifacultad | Icurso | ITipoSolicitud;
-type CollectionName = 'textos' | 'facultades' | 'cursos' | 'tipo_certificados'
+type CollectionName = 'textos' | 'facultades' | 'cursos' | 'certificados'
 
 export default class TypesService
 {
@@ -20,7 +20,7 @@ export default class TypesService
                     modificado: doc.data().modificado ? (doc.data().modificado as Timestamp).toDate() : null
                 } as unknown as T)
             }) 
-           return result
+            return result
         }
         catch(error){
             console.error("Error al obtener documentos", error)

@@ -1,7 +1,7 @@
 import Isolicitud from '@/interfaces/solicitud.interface';
 import { firestore } from '@/lib/firebase';
 import { obtenerPeriodo } from '@/lib/utils';
-import { collection, query, where, orderBy, getDocs, Timestamp, serverTimestamp, addDoc } from 'firebase/firestore';
+import { collection, query, where, orderBy, getDocs, Timestamp, serverTimestamp, addDoc, doc, getDoc } from 'firebase/firestore';
 
 export default class SolicitudesService 
 {
@@ -92,4 +92,18 @@ export default class SolicitudesService
         } 
         return ''
     }
+    public static async getItemId(id:string){
+		const docRef = doc(this.db, id)
+		const docSnap = await getDoc(docRef)
+		if (docSnap.exists()) {
+		    const data = docSnap.data()
+			data.creado = (data.creado as Timestamp).toDate();
+			data.modificado = (data.modificado as Timestamp).toDate();
+			data.id = docSnap.id
+			return data
+		} else {
+		  console.log("No such document!");
+		  return null
+		}
+	}
 }

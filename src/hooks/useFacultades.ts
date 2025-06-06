@@ -6,8 +6,8 @@ import useStore from './useStore'
 import { useFacultiesStore } from '@/stores/types.stores'
 
 const useFacultades = () => {
-    const subjects = useStore(useFacultiesStore, (state) => state.faculties)
-    const [data, setData] = React.useState<Ifacultad[] | undefined>(subjects)
+    const items = useStore(useFacultiesStore, (state) => state.faculties)
+    const [data, setData] = React.useState<Ifacultad[] | undefined>(items)
 
     React.useEffect(() => {
         const getData = async () => {
@@ -16,7 +16,7 @@ const useFacultades = () => {
             setData(result)
         }
         if(!data) getData()
-    }, [subjects])
+    }, [])
 
     return data
 }

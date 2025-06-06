@@ -3,6 +3,14 @@ import IStudent from "@/modules/solicitud-nuevo/interfaces/student.interface";
 
 export default class EmailService 
 {
+    public static async sendEmailCertificado(email:string, codigo:string) {
+        const body = JSON.stringify({
+            type: 'CERTIFICADO',
+            email: email,
+            user: codigo
+        })
+        this.sendEmail(body)
+    }
     public static async sendEmailBeca(email:string, codigo:string) {
         const body = JSON.stringify({
             type: 'BECA',
@@ -27,6 +35,26 @@ export default class EmailService
         })
         this.sendEmail(body)
         
+    }
+     /**
+     * Returns the verification number stored in localStorage if it exists and has not expired.
+     * If the number has expired, it is removed from localStorage.
+     * @returns {string} The verification number if it exists and has not expired, otherwise an empty string.
+     */
+    public static getVerificationNumber():string {
+        const storedData = localStorage.getItem('verificationNumber');
+        if (storedData) {
+            const { randomNumber, expirationTime } = JSON.parse(storedData);
+            const currentTime = new Date().getTime();
+            
+            // verify if number has expired
+            if (currentTime < expirationTime) {
+                return randomNumber; // valid number
+            } else {
+                localStorage.removeItem('verificationNumber'); // Borrar el dato si ha expirado
+            }
+        }
+        return ''; // if it does not exist or has expired
     }
     private static async sendEmail(body:string) 
     {

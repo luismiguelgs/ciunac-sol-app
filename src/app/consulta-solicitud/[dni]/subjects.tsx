@@ -6,7 +6,7 @@ import { NIVEL } from "@/lib/constants";
 
 export default function Subjects({item}:{item: Isolicitud})
 {
-    const data = useSubjects();
+    const {data} = useSubjects();
     const subject = data?.find(subject => subject.value === item.idioma)?.label;
     const level = NIVEL?.find(nivel => nivel.value === item.nivel)?.label;
     

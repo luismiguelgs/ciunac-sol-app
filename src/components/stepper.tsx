@@ -11,31 +11,40 @@ interface StepperProps {
 }
 
 export const Stepper: React.FC<StepperProps> = ({ steps, children, activeStep}) => {
+    // Calculamos el ancho de cada sección basado en el número de pasos
+    const stepWidth = `${100 / steps.length}%`;
     
     return (
         <div className="w-full max-w-5xl mx-auto p-2">
             {/* Encabezado del Stepper */}
             <div className="flex justify-center items-center relative w-full px-2 md:px-4">
-                <div className="grid grid-cols-3 w-full max-w-2xl gap-4">
-                    {steps.map((label, index) => (
-                    <div key={index} className="flex flex-col items-center relative">
-                        {/* Círculo del paso */}
-                        <div
-                        className={`w-8 md:w-10 h-8 md:h-10 flex items-center justify-center rounded-full border-2 
-                            ${index <= activeStep ? "bg-primary border-primary text-primary-foreground" : "bg-background border-muted-foreground text-muted-foreground"}`}
-                        >
-                        {index + 1}
+                <div className="relative w-full max-w-2xl">
+                    {/* Línea de fondo que atraviesa todos los pasos */}
+                    <div className="absolute top-4 md:top-5 left-[20px] md:left-[25px] right-[20px] md:right-[25px] h-[2px] bg-border" />
+                    
+                    {/* Línea de progreso que muestra hasta dónde ha avanzado */}
+                    <div 
+                        className="absolute top-4 md:top-5 left-[20px] md:left-[25px] h-[2px] bg-primary transition-all duration-300 ease-in-out" 
+                        style={{ width: `calc(${(activeStep / (steps.length - 1)) * 100}% - ${activeStep === steps.length - 1 ? 40 : 20}px)` }}
+                    />
+                    
+                    {/* Contenedor de los círculos */}
+                    <div className="flex justify-between w-full relative z-10">
+                        {steps.map((label, index) => (
+                        <div key={index} className="flex flex-col items-center" style={{ width: stepWidth }}>
+                            {/* Círculo del paso */}
+                            <div
+                            className={`w-8 md:w-10 h-8 md:h-10 flex items-center justify-center rounded-full border-2 bg-background
+                                ${index < activeStep ? "border-primary bg-primary text-primary-foreground" : 
+                                  index === activeStep ? "border-primary bg-primary text-primary-foreground" : 
+                                  "border-muted-foreground text-muted-foreground"}`}
+                            >
+                            {index + 1}
+                            </div>
+                            <span className="mt-2 text-xs md:text-sm text-center min-h-[40px] px-1">{label}</span>
                         </div>
-                        <span className="mt-2 text-xs md:text-sm text-center">{label}</span>
-                        {/* Connecting line */}
-                        {index < steps.length - 1 && (
-                            <div 
-                                className={`absolute top-4 md:top-5 left-[calc(50%+1.5rem)] md:left-[calc(50%+2rem)] w-[calc(100%-2rem)] md:w-[calc(100%-3rem)] h-[2px] 
-                                    ${index < activeStep ? "bg-primary" : "bg-border"}`}
-                            />
-                        )}
+                        ))}
                     </div>
-                    ))}
                 </div>
             </div>
 

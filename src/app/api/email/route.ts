@@ -59,7 +59,7 @@ function getBodyEmail(body:Body){
                             ${FOOTER}
                         </body>
                         </html>`,
-                subject:"CIUNAC - COMPROBACIÓN DE CORREO DE ALUMNOS NUEVOS",
+                subject:"CIUNAC - COMPROBACIÓN DE CORREO",
                 text:`Ingrese el siguente numero para verificar su correo: ${body.number}`
             }
         case "REGISTER":
@@ -110,7 +110,31 @@ function getBodyEmail(body:Body){
                         </body>
                         </html>`,
                 subject:"CIUNAC - CONFIRMACIÓN DE REGISTRO PARA SOLICITUD DE BECA",
-                text:`Ingrese el siguente numero para verificar su correo: ${body.number}`
+                text:`Este es el codigo de su transacción: ${body.user}`
+            }
+        case "CERTIFICADO":
+            return {
+                body:`<!DOCTYPE html>
+                        <html>
+                            ${HEAD}
+                        <body>
+                            <img src="https://ciunac.unac.edu.pe/wp-content/uploads/2024/04/cropped-WhatsApp-Image-2024-04-19-at-2.48.00-PM-2.jpeg" alt="logo" width="200px"/>
+                            <h1>CONFIRMACIÓN DE REGISTRO SOLICITUD DE CERTIFICADO/CONSTANCIA</h1>
+                            <p>Estimad@ estudiante:</p>
+                            <p>Le informamos que hemos recibido correctamente su solicitud de beca a través del sistema del CIUNAC.
+                                Nuestro equipo revisará su documentación y, en caso de requerir información adicional, nos pondremos en contacto con usted por este medio.
+                                atentos a sus inquietudes.
+                            </p>
+                            <p>Su codigo de transacción es: ${body.user}</p>
+                            <p>Puede revisar el estado de su solicitud con su documento de identidad, adicionalmente aqui también puede 
+                            obtener su cargo</p>
+                            <a href="https://ciunac.unac.edu.pe/reporte-certificado-virtual/">Consulta de Solicitud</a>
+                            <hr>
+                            ${FOOTER}
+                        </body>
+                        </html>`,
+                subject:"CIUNAC - CONFIRMACIÓN DE REGISTRO PARA SOLICITUD DE CERTIFICADO O CONSTANCIA",
+                text:`Este es el codigo de su transacción: ${body.user}`
             }
     }
     

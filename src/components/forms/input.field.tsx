@@ -5,6 +5,7 @@ import React from "react";
 import { Control } from "react-hook-form";
 import { Mail, Phone } from "lucide-react"
 
+
 interface Props extends React.InputHTMLAttributes<HTMLInputElement>{
     name: string;
 	placeholder?: string;
@@ -12,7 +13,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement>{
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
 	control: Control<any>;
 	disabled?: boolean;
-	inputRef?: React.RefObject<HTMLInputElement>
+	inputRef?: React.RefObject<HTMLInputElement>;
 	label?: string;
 	description?: string;	
 }
@@ -43,22 +44,25 @@ export default function InputField({ control, type='text', disabled=false, input
                 <FormField
                     control={control}
                     name={name}
-                    render={({ field }) => (
-                        <FormItem className="min-h-[70px]">
-                            <FormLabel>{label}</FormLabel>
-                            <FormControl>
-                                <Input 
-                                    {...field} 
-                                    type={type}
-                                    placeholder={placeholder} 
-                                    disabled={disabled} 
-                                    ref={inputRef} 
-                                />
-                            </FormControl>
-                            <FormDescription>{description}</FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
+                    render={({ field }) => {
+                        
+                        return (
+                            <FormItem className="min-h-[70px]">
+                                <FormLabel>{label}</FormLabel>
+                                <FormControl>
+                                    <Input 
+                                        {...field} 
+                                        type={type}
+                                        placeholder={placeholder} 
+                                        disabled={disabled} 
+                                        ref={inputRef} 
+                                    />
+                                </FormControl>
+                                <FormDescription>{description}</FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )
+                    }}
                 />
             </>
         ):(

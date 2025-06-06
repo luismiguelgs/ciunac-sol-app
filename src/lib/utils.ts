@@ -20,3 +20,9 @@ export function obtenerPeriodo()
 
     return `${String(año)}${mesFormateado}`
 }
+export const isPdf = (url:string):boolean=>{
+	const path = url.split("/o/")[1];
+	const decodedPath = decodeURIComponent(path.split("?")[0]);
+	const fileName = decodedPath.split("/").pop();
+	return fileName?.endsWith('.pdf')?? false;
+}

@@ -97,7 +97,7 @@ function BecaProcess()
 }
 export default function BecaProcessPage()
 {
-    return (<React.Suspense fallback={<div>Loading...</div>}>
+    return (<React.Suspense fallback={<div>Cargando...</div>}>
         <BecaProcess />
     </React.Suspense>)
 }

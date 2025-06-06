@@ -1,7 +1,7 @@
 import { StepperControl } from '@/components/stepper'
 import React from 'react'
-import useStore from "../stores/solicitud.store"
 import Image from 'next/image'
+import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { finalSchema, IFinalSchema, initialValues } from '@/schemas/final.schema'
@@ -14,11 +14,12 @@ import Isolicitud from '@/interfaces/solicitud.interface'
 import EmailService from '@/services/email.service'
 import GeneralDialog from '@/components/dialogs/general-dialog'
 import { Button } from '@/components/ui/button'
-import { Loader2 } from "lucide-react"
+import { Loader2, ExternalLink } from "lucide-react"
 import { useRouter } from 'next/navigation'
-import { ExternalLink } from 'lucide-react'; // Asegúrate de importar el icono que deseas usar
 import DetalleSolicitudCard from '@/components/detalle-solicitud-card'
-import Link from 'next/link'
+import useSolicitudStore from '../stores/solicitud.store'
+import useStore from '@/hooks/useStore'
+import { useTextsStore } from '@/stores/types.stores'
 
 type Props = {
     activeStep : number
@@ -34,8 +35,10 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
     const [state, setState] = React.useState<'SAVE'|'EMAIL'|'ERROR'>('SAVE')
     const [message, setMessage] = React.useState<React.ReactNode>('')
    
-    const { solicitud } = useStore();
-   
+    const { solicitud } = useSolicitudStore()
+    
+    const textos = useStore(useTextsStore, (state) => state.textos)
+
     const form = useForm<IFinalSchema>({
         resolver: zodResolver(finalSchema),
         defaultValues: initialValues,
@@ -61,12 +64,12 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
                 setState('EMAIL')
                 setMessage('Solicitud guardada correctamente')
                 //envia un correo electronico confirmando la recepcion de la solicitud
-                await EmailService.sendEmailBeca(solicitud.email as string, response as string )
+                await EmailService.sendEmailCertificado(solicitud.email as string, response as string )
                 setOpen(false)
             }
             
             //redirecciona al usuario a la pagina final de la solicitud
-            router.push('/solicitud-beca/finalizar')
+            router.push(`/solicitud-certificados/finalizar?id=${response}`)
         }
     }
 
@@ -75,10 +78,15 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
             <div className="grid grid-cols-1 gap-6">
                 <MyAlert 
                     title='Verifica tus datos'
-                    description='Verifica que los datos ingresados sean correctos para poder finalizar con el proceso de solicitud.'
+                    description={textos?.find(objeto=> objeto.titulo === 'texto_1_final')?.texto}
                     type='warning'
                 />
-                <DetalleSolicitudCard solicitud={solicitud} tipo='BECA' />
+                <DetalleSolicitudCard solicitud={solicitud} tipo='CERTIFICADO' />
+                    <MyAlert
+                        title='Importante'
+                        description={textos?.find(objeto=> objeto.titulo === 'texto_1_disclamer')?.texto}
+                        type='warning'
+                    />
             </div>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="p-4">
@@ -93,7 +101,7 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
                         name='terminos'
                         label="Acepto los términos y condiciones"
                         control={form.control}
-                        description='Declaro que conozco el reglamento respecto a becas CIUNAC' 
+                        description='Declaro que conozco el reglamento respecto a certificados CIUNAC' 
                         />
                     </div>
                     <div className="flex justify-end items-center mt-2">
@@ -101,6 +109,7 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
                             Ver Reglamento <ExternalLink className="ml-1 w-4 h-4" />
                         </Link>
                     </div>
+                    
                     <StepperControl 
                         activeStep={activeStep} 
                         steps={steps} 

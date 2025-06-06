@@ -24,11 +24,13 @@ interface DatePickerProps {
     description?: string
     startYear?: number
     endYear?: number
+    disabled?: boolean
 }
 
 export function DatePicker({
 	control,
 	name,
+  disabled = false,
 	label,
 	description,
 	startYear = getYear(new Date()) - 80,
@@ -56,6 +58,7 @@ export function DatePicker({
             <Popover>
               <PopoverTrigger asChild>
                 <Button
+                  disabled={disabled}
                   variant={"outline"}
                   className={cn(
                     "w-full justify-start text-left font-normal",

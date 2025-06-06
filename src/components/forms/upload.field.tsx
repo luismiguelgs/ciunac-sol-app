@@ -4,74 +4,80 @@
 import { useRef, useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import {
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
+  	ref,
+  	uploadBytesResumable,
+  	getDownloadURL,
 } from "firebase/storage";
 import { storage } from "@/lib/firebase";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
+  	Card,
+  	CardContent,
+  	CardHeader,
+  	CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { LucideIcon, Upload } from "lucide-react";
 
 interface FileUploaderCardProps {
-  name: string;
-  label?: string;
-  icon: LucideIcon
-  dni: string | undefined;
+	name: string;
+	label?: string;
+	icon: LucideIcon
+	dni: string | undefined;
+	folder?: string | undefined;
 }
 
-export const FileUploaderCard = ({ name, label, icon:Icon, dni }: FileUploaderCardProps) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const { control, setValue } = useFormContext();
+export const FileUploaderCard = ({ name, label, icon:Icon, dni, folder='becas' }: FileUploaderCardProps) => {
+	const fileInputRef = useRef<HTMLInputElement>(null);
+	const [uploading, setUploading] = useState(false);
+	const [progress, setProgress] = useState(0);
+	const { control, setValue } = useFormContext();
 
-  const handleFileSelect = () => {
-    fileInputRef.current?.click();
-  };
+	const handleFileSelect = () => {
+		fileInputRef.current?.click();
+	};
 
-  const handleUpload = (file: File, onChange: (url: string) => void) => {
+  	const handleUpload = (file: File, onChange: (url: string) => void) => {
     
-	if (file.type !== "application/pdf") {
+		if (folder === 'becas' && file.type !== "application/pdf") {
 		alert("Solo se permiten archivos PDF.");
 		return;
-	}
+		}
 	
-	const extension = file.name.split('.').pop();
-	const filename = `${dni}-${name}.${extension}`;
-	const storageRef = ref(storage, `becas/${filename}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
+		if (folder !== 'becas' && !["application/pdf", "image/jpeg", "image/png"].includes(file.type)) {
+		alert("Solo se permiten archivos PDF, JPG y PNG.");
+		return;
+		}
+		
+		const extension = file.name.split('.').pop();
+		const filename = `${dni}-${name}.${extension}`;
+		const storageRef = ref(storage, `${folder}/${filename}`);
+		const uploadTask = uploadBytesResumable(storageRef, file);
 
-    setUploading(true);
-    setProgress(0);
+		setUploading(true);
+		setProgress(0);
 
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const percent = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        setProgress(percent);
-      },
-      (error) => {
-        console.error("Error al subir:", error);
-        setUploading(false);
-      },
-      async () => {
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        onChange(downloadURL);
-        setValue(name, downloadURL);
-        setUploading(false);
-        setProgress(100);
-      }
-    );
-  };
+		uploadTask.on(
+			"state_changed",
+			(snapshot) => {
+				const percent = Math.round(
+				(snapshot.bytesTransferred / snapshot.totalBytes) * 100
+				);
+				setProgress(percent);
+			},
+			(error) => {
+				console.error("Error al subir:", error);
+				setUploading(false);
+			},
+			async () => {
+				const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+				onChange(downloadURL);
+				setValue(name, downloadURL);
+				setUploading(false);
+				setProgress(100);
+			}
+		);
+  	};
 
   return (
     <Controller
@@ -89,7 +95,7 @@ export const FileUploaderCard = ({ name, label, icon:Icon, dni }: FileUploaderCa
             <input
 				type="file"
 				ref={fileInputRef}
-				accept=".pdf"
+				accept={folder === 'becas' ? ".pdf" : ".pdf, .jpg, .jpeg, .png"}
 				onChange={(e) => {
 					const file = e.target.files?.[0];
 					if (file) handleUpload(file, onChange);

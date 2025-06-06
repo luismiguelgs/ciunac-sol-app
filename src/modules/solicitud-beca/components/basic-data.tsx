@@ -25,8 +25,8 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
     const phoneRef = useMask({ mask: '_________', replacement: { _: /\d/ } });
     const codeRef = useMask({ mask: '__________', replacement: { _: /\d/ } });
     const dniRef = useMask({ mask: '_________', replacement: { _: /\d/ } });
-    const lastNamesRef = useMask({ mask: '______________________________', replacement: { _: /^[a-zA-Z \u00C0-\u00FF]*$/ } })
-    const namesRef = useMask({ mask: '_______________________________', replacement: { _: /^[a-zA-Z \u00C0-\u00FF]*$/ } })
+    const lastNamesRef = useMask({ mask: '______________________________', replacement: { '_': /[a-zA-Z\u0027 \u00C0-\u00FF]/ } })
+    const namesRef = useMask({ mask: '_______________________________', replacement: { '_': /[a-zA-Z\u0027 \u00C0-\u00FF]/ } })
 
     const form = useForm<IBasicInfoSchema>({
         resolver: zodResolver(basicInfoSchema),
