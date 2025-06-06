@@ -47,7 +47,7 @@ export default function ConsultaForm({solicitud}: Props)
 	const [dialog, setDialog] = React.useState<{title: string; description: string; } | null>(null)
 	const [open, setOpen] = React.useState(false)
 	const captchaRef = React.useRef<ReCAPTCHA>(null)
-	const dniRef = useMask({ mask: '_________', replacement: { _: /\d/ } });
+	const dniRef = useMask({ mask: '_________', replacement: { _: /[A-Z0-9]/ }});
 	
 	const form = useForm({
 		resolver: zodResolver(schema),
@@ -86,7 +86,7 @@ export default function ConsultaForm({solicitud}: Props)
 							<InputField 
 								name="documento"
 								label="Documento de Identidad"
-                				description="Ingrese su Documento de Identidad (DNI/CE)"
+                				description="Ingrese su Documento de Identidad (DNI/CE/PASAPORTE)"
 								placeholder="4025..."
                 				control={form.control} 
                 				disabled={loading} 
