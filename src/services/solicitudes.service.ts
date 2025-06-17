@@ -21,9 +21,13 @@ export default class SolicitudesService
         // Devolvemos un array con los datos de los documentos, incluyendo el ID
         return querySnapshot.docs.map((doc) => {
             const data = doc.data();
-            // Agregamos el campo 'id' al objeto data
-            data.creado = (data.creado as Timestamp).toDate();
-			data.modificado = (data.modificado as Timestamp).toDate();
+            // Convertir el timestamp solo si es una instancia de Timestamp
+            if (data.creado instanceof Timestamp) {
+                data.creado = data.creado.toDate();
+            }
+            if (data.modificado instanceof Timestamp) {
+                data.modificado = data.modificado.toDate();
+            }
             data.id = doc.id;
             return data;
         });

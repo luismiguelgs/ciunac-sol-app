@@ -68,7 +68,7 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                             <h2 className="text-2xl font-bold text-center md:text-left">
                                 {`${requests[0].apellidos} ${requests[0].nombres}`}
                             </h2>
-                            <p className="text-muted-foreground text-center md:text-left">DNI: {dni}</p>
+                            <p className="text-muted-foreground text-center md:text-left">DNI/CE/PASAPORTE: {dni}</p>
                             {textos && (
                                 <Alert>
                                     <AlertDescription>

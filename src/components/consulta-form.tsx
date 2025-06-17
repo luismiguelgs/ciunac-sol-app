@@ -33,7 +33,9 @@ const alert = {
 const schema = z.object({
 	documento: z.string().min(8,{message: msg.required})
 		.max(9, {message: msg.invalid})
-		.regex(/^[0-9]+$/, {message: msg.invalid}),
+		.regex(/^[A-Za-z0-9]+$/, { message: msg.invalid })
+		.trim()
+		.transform((val) => val.toUpperCase())
 })
 
 type Props = {
@@ -47,7 +49,7 @@ export default function ConsultaForm({solicitud}: Props)
 	const [dialog, setDialog] = React.useState<{title: string; description: string; } | null>(null)
 	const [open, setOpen] = React.useState(false)
 	const captchaRef = React.useRef<ReCAPTCHA>(null)
-	const dniRef = useMask({ mask: '_________', replacement: { _: /[A-Z0-9]/ }});
+	const dniRef = useMask({ mask: '_________', replacement: { _: /[A-Za-z0-9]/ }});
 	
 	const form = useForm({
 		resolver: zodResolver(schema),
