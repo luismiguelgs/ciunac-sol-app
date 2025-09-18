@@ -128,12 +128,9 @@ function SolicitudUbicacionProceso()
                     })
                 }
             </Stepper>
-            <GeneralDialog
-                open={bloqueoRep} 
-                setOpen={setBloqueoRep} 
-                title="Solicitud en proceso" 
-            />
-            <BlockDialog />
+            <GeneralDialog open={bloqueoRep} setOpen={setBloqueoRep} title="Solicitud en proceso" >
+                <BlockDialog />
+            </GeneralDialog>
         </div>
     )
 }
