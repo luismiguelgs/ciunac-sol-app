@@ -101,7 +101,8 @@ function getBodyEmail(body:Body){
                             <h1>CONFIRMACIÓN DE REGISTRO PARA BECA CIUNAC</h1>
                             <p>Estimad@ estudiante:</p>
                             <p>Le informamos que hemos recibido correctamente su solicitud de beca a través del sistema del CIUNAC.
-                                Nuestro equipo revisará su documentación y, en caso de requerir información adicional, nos pondremos en contacto con usted por este medio.
+                                Nuestro equipo revisará su documentación y, se publicará los resuldatos en la web de ciunac según el cronograma.
+                                <a href="https://ciunac.unac.edu.pe/becas">Resultado de solicitud de becas</a><br>
                                 Agradecemos su interés y participación en el programa de becas.
                             </p>
                             <p>Su codigo es: ${body.user}</p>
@@ -121,7 +122,7 @@ function getBodyEmail(body:Body){
                             <img src="https://ciunac.unac.edu.pe/wp-content/uploads/2024/04/cropped-WhatsApp-Image-2024-04-19-at-2.48.00-PM-2.jpeg" alt="logo" width="200px"/>
                             <h1>CONFIRMACIÓN DE REGISTRO SOLICITUD DE CERTIFICADO/CONSTANCIA</h1>
                             <p>Estimad@ estudiante:</p>
-                            <p>Le informamos que hemos recibido correctamente su solicitud de beca a través del sistema del CIUNAC.
+                            <p>Le informamos que hemos recibido correctamente su solicitud de certificado/constancia a través del sistema del CIUNAC.
                                 Nuestro equipo revisará su documentación y, en caso de requerir información adicional, nos pondremos en contacto con usted por este medio.
                                 atentos a sus inquietudes.
                             </p>
@@ -134,6 +135,28 @@ function getBodyEmail(body:Body){
                         </body>
                         </html>`,
                 subject:"CIUNAC - CONFIRMACIÓN DE REGISTRO PARA SOLICITUD DE CERTIFICADO O CONSTANCIA",
+                text:`Este es el codigo de su transacción: ${body.user}`
+            }
+        case "UBICACION":
+            return {
+                body:`<!DOCTYPE html>
+                        <html>
+                            ${HEAD}
+                        <body>
+                            <img src="https://ciunac.unac.edu.pe/wp-content/uploads/2024/04/cropped-WhatsApp-Image-2024-04-19-at-2.48.00-PM-2.jpeg" alt="logo" width="200px"/>
+                            <h1>CONFIRMACIÓN DE REGISTRO SOLICITUD DE EXAMEN DE UBICACIÓN</h1>
+                            <p>Estimad@ estudiante:</p>
+                            <p>Le informamos que hemos recibido correctamente su solicitud de examen de ubicación a través del sistema del CIUNAC.
+                                Nuestro equipo revisará su documentación y, en caso de requerir información adicional, puede comunicarse a nuestros teléfonos.
+                            </p>
+                            <p>Su codigo de transacción es: ${body.user}</p>
+                            <p>Puede obtener su nota y constancia en el siguiente enlace:</p>
+                            <a href="https://ciunac.unac.edu.pe/reporte-ubicacion-virtual/">Constancia y Resultados</a>
+                            <hr>
+                            ${FOOTER}
+                        </body>
+                        </html>`,
+                subject:"CIUNAC - CONFIRMACIÓN DE REGISTRO PARA SOLICITUD DE EXAMEN DE UBICACIÓN",
                 text:`Este es el codigo de su transacción: ${body.user}`
             }
     }

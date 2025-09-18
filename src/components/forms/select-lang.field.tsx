@@ -54,12 +54,21 @@ type Props = {
     control: Control<any>
     programs? : IProgram[]
     name: string
+    ubicacion?: boolean
     //options?: { value: string; label: string }[] 
 }
 
-export function SelectLanguage({name, control, programs=[]}:Props) 
+export function SelectLanguage({name, control, programs=[], ubicacion=false}:Props) 
 {
     const {data, loading} = useSubjects()
+
+    let filteredData = data
+
+    if (ubicacion && data){
+        filteredData = data.filter(program => 
+            !['FRANCES', 'QUECHUA', 'CHINO'].includes(program.value)
+        )
+    }
 
     if(loading){
         return (
@@ -89,7 +98,7 @@ export function SelectLanguage({name, control, programs=[]}:Props)
                                 programs.length === 0 ? (
                                     <React.Fragment>
                                         {
-                                            data?.map((program, index) => (
+                                            filteredData?.map((program, index) => (
                                                 <SelectItem key={index} value={program.value} className="py-2">
                                                     <div className="flex items-center gap-3 w-full pl-0.5">
                                                         <div className="flex-shrink-0 transform origin-center scale-150 w-7 h-7 flex items-center justify-center">

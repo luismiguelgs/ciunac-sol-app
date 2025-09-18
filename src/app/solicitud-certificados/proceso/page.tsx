@@ -2,9 +2,9 @@
 import FinData from "@/components/fin-data/fin-data";
 import { Stepper } from "@/components/stepper";
 import BasicData from "@/modules/solicitud-certificado/components/basic-data";
-import Documentos from "@/modules/solicitud-certificado/components/documentos";
+import Documentos from "@/components/documentos";
 import Register from "@/modules/solicitud-certificado/components/register";
-import useSolicitudStore from "@/modules/solicitud-certificado/stores/solicitud.store";
+import useSolicitudStore from "@/stores/solicitud.store";
 import { useDocumentsStore } from "@/stores/types.stores";
 import { useSearchParams } from "next/navigation";
 import React from "react";
@@ -58,7 +58,6 @@ function SolicitudCertificadoProceso()
                 break;
             case 2:
                 if(trabajador === 'true'){
-                    console.log(values)
                     setSolicitudField('img_cert_trabajo', values.img_cert_trabajo)
                 }
                 break;

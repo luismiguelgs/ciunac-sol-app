@@ -3,6 +3,14 @@ import IStudent from "@/modules/solicitud-nuevo/interfaces/student.interface";
 
 export default class EmailService 
 {
+    public static async sendEmailUbicacion(email:string, codigo:string) {
+        const body = JSON.stringify({
+            type: 'UBICACION',
+            email: email,
+            user: codigo
+        })
+        this.sendEmail(body)
+    }
     public static async sendEmailCertificado(email:string, codigo:string) {
         const body = JSON.stringify({
             type: 'CERTIFICADO',

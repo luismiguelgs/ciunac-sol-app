@@ -1,7 +1,7 @@
 'use client'
 import useStore from '@/hooks/useStore'
 import { Itexto } from '@/interfaces/types.interface'
-import CargoPdf from '@/modules/consulta-solicitud/components/cargo-pdf'
+import CargoPdf from '@/modules/solicitud-ubicacion/components/cargo-pdf'
 import SolicitudesService from '@/services/solicitudes.service'
 import { useTextsStore } from '@/stores/types.stores'
 import Image from 'next/image'
@@ -23,6 +23,7 @@ function Finish()
     React.useEffect(() => {
         const getData = async (_id:string) => {
             const result = await SolicitudesService.getItemId(_id)
+            console.log(result);
             setData(result)
         }
         getData(id as string)

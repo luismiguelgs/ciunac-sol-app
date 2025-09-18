@@ -12,7 +12,7 @@ export default class SolicitudesService
 		
         const q = query(
             this.db,
-            where('dni','==',dni) , 
+            where('dni','==',dni), 
             orderBy('creado','desc')
         )
         // Obtenemos los documentos que cumplen la consulta

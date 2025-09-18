@@ -79,50 +79,58 @@ export const FileUploaderCard = ({ name, label, icon:Icon, dni, folder='becas' }
 		);
   	};
 
-  return (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field: { value, onChange }, fieldState: { error } }) => (
-        <Card className="w-full">
-          {(label) && (
-            <CardHeader className="flex flex-row items-center gap-2">
-				{Icon && <Icon className="h-5 w-5 text-muted-foreground" />}
-				<CardTitle className="text-base">{label}</CardTitle>
-		  	</CardHeader>
-          )}
-          <CardContent className="flex flex-col gap-1">
-            <input
-				type="file"
-				ref={fileInputRef}
-				accept={folder === 'becas' ? ".pdf" : ".pdf, .jpg, .jpeg, .png"}
-				onChange={(e) => {
-					const file = e.target.files?.[0];
-					if (file) handleUpload(file, onChange);
-				}}
-				className="hidden"
-            />
+	const handleDisabled = ():boolean => {
+		if (folder === 'dni') {
+			return uploading || String(dni).length < 8
+		}else{
+			return uploading
+		}
+	}
 
-            <Button type="button" onClick={handleFileSelect} disabled={uploading}>
-				<Upload className="w-4 h-4 mr-2" />
-				{uploading ? "Subiendo..." : value ? "Reemplazar documento" : "Subir documento"}
-            </Button>
+	return (
+		<Controller
+		control={control}
+		name={name}
+		render={({ field: { value, onChange }, fieldState: { error } }) => (
+			<Card className="w-full">
+			{(label) && (
+				<CardHeader className="flex flex-row items-center gap-2">
+					{Icon && <Icon className="h-5 w-5 text-muted-foreground" />}
+					<CardTitle className="text-base">{label}</CardTitle>
+				</CardHeader>
+			)}
+			<CardContent className="flex flex-col gap-1">
+				<input
+					type="file"
+					ref={fileInputRef}
+					accept={folder === 'becas' ? ".pdf" : ".pdf, .jpg, .jpeg, .png"}
+					onChange={(e) => {
+						const file = e.target.files?.[0];
+						if (file) handleUpload(file, onChange);
+					}}
+					className="hidden"
+				/>
 
-            {uploading && <Progress value={progress} className="h-2" />}
+				<Button type="button" onClick={handleFileSelect} disabled={handleDisabled()}>
+					<Upload className="w-4 h-4 mr-2" />
+					{uploading ? "Subiendo..." : value ? "Reemplazar documento" : "Subir documento"}
+				</Button>
 
-            {value && !uploading && (
-              <p className="text-sm text-green-600">
-                Archivo cargado:{" "}
-                <a href={value} target="_blank" className="underline" rel="noopener noreferrer">
-                  Ver archivo
-                </a>
-              </p>
-            )}
+				{uploading && <Progress value={progress} className="h-2" />}
 
-            {error && <p className="text-sm text-red-600">{error.message}</p>}
-          </CardContent>
-        </Card>
-      )}
-    />
-  );
+				{value && !uploading && (
+				<p className="text-sm text-green-600">
+					Archivo cargado:{" "}
+					<a href={value} target="_blank" className="underline" rel="noopener noreferrer">
+					Ver archivo
+					</a>
+				</p>
+				)}
+
+				{error && <p className="text-sm text-red-600">{error.message}</p>}
+			</CardContent>
+			</Card>
+		)}
+		/>
+	);
 };

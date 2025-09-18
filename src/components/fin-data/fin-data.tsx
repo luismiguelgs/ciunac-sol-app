@@ -3,7 +3,7 @@ import { finInfoSchema, IFinInfoSchema, initialValues } from './fin-data.schema'
 import { useForm } from 'react-hook-form';
 import { StepperControl } from '../stepper';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useSolicitudStore from '@/modules/solicitud-certificado/stores/solicitud.store';
+import useSolicitudStore from '@/stores/solicitud.store';
 import useStore from '@/hooks/useStore';
 import { useTextsStore } from '@/stores/types.stores';
 import { useMask } from '@react-input/mask';
@@ -14,11 +14,9 @@ import { CloudUpload } from 'lucide-react';
 import { MySelect } from '../forms/myselect.field';
 import InputField from '../forms/input.field';
 import { DatePicker } from '../forms/date-picker.new';
-import { FileUploaderCard } from '../forms/upload.field';
 import Image from 'next/image';
-import { Card, CardContent } from '../ui/card';
 import MyAlert from '../forms/myAlert';
-import { isPdf } from '@/lib/utils';
+import UploadImage from '../upload-image';
 
 type Props = {
     activeStep: number;
@@ -139,49 +137,13 @@ export default function FinData({activeStep,setActiveStep,steps,handleNext, prec
 						)}
 					</div>
 					<div>
-						<Card className='mb-2'>
-							<CardContent className="flex justify-center items-center p-4">
-						{
-							form.watch('img_voucher') ? (
-								<React.Fragment>
-									{isPdf(form.watch('img_voucher') as string) ? (
-										<Image
-											src={'/images/pdf.png'}
-											width={250}
-											height={250}
-											alt="Voucher de pago"
-											className="rounded-md object-contain h-[250px]"
-										/>
-									):(
-										<Image
-											src={form.watch('img_voucher') ?? '/images/upload.svg'}
-											width={250}
-											height={250}
-											alt="Voucher de pago"
-											className="rounded-md object-contain h-[250px]"
-										/>
-									)}
-								</React.Fragment>
-							):(
-								<React.Fragment>
-									<Image
-										src={'/images/upload.svg'}
-										width={250}
-										height={250}
-										alt="Voucher de pago"
-										className="rounded-md object-contain h-[250px]"
-									/>
-								</React.Fragment>
-							)
-						}
-						</CardContent>
-						</Card>
-						<FileUploaderCard
-                            name="img_voucher" 
-                            label="Voucher de Pago" 
-                            dni={solicitud.dni}
-							folder='vouchers'
-                            icon={CloudUpload}/>
+						<UploadImage 
+                            form={form}
+                            field="img_voucher"
+                            label="Voucher de pago"
+                            dni={solicitud.dni as string}
+                            folder="voucher"
+                        />
 					</div>
 					
 				</div>

@@ -1,8 +1,19 @@
 import VerificacionEmail from '@/components/verificacion-email'
-import FormEmailSolicitud from '@/modules/solicitud-certificado/components/form-email'
+import FormEmailSolicitud from '@/modules/solicitud-certificado/components/form-email-solicitud'
 import React from 'react'
+import TypesService from '@/services/types.service'
+import { ITipoSolicitud } from '@/interfaces/types.interface'
+import CertificadosTable from '@/components/certificados-table'
 
-export default function SolicitudCertificadoPage() {
+const getCertificates = async (): Promise<ITipoSolicitud[]> => {
+	const res = await TypesService.fetchTypes<ITipoSolicitud>('certificados')
+	return res
+}
+
+export default async function SolicitudCertificadoPage() 
+{
+	const certificados = await getCertificates()
+
 	return (
 		<div className="p-4">
              <h2 className="text-2xl font-bold uppercase text-center mb-6">
@@ -14,7 +25,10 @@ export default function SolicitudCertificadoPage() {
 				<VerificacionEmail />
 
                 {/* Right Column */}
-				<FormEmailSolicitud />
+				<div className="space-y-4">
+					<FormEmailSolicitud />
+					<CertificadosTable data={certificados} />
+				</div>
 			</div>
 		</div>
 	)

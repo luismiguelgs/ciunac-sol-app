@@ -24,7 +24,7 @@ const useSolicitudStore = create<StoreState>((set) => ({
         tipo_documento: 'PE01',
         email: '',
         idioma: '',
-        nivel: '',
+        nivel: 'BASICO',
         trabajador: false,
         alumno_ciunac: false,
         pago: 0,
@@ -47,4 +47,4 @@ const useSolicitudStore = create<StoreState>((set) => ({
     // Add other state/actions if needed
 }));
 
-export default useSolicitudStore; // Assuming a default export
+export default useSolicitudStore; // Assuming a default export 

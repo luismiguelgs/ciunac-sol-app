@@ -64,15 +64,15 @@ export default function FormEmail({action}: {action: (data:IVerificationSchema) 
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="p-4">
-                <div className="space-y-6 pt-3">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="p-2">
+                <div className="space-y-2 pt-1">
                     <InputField
                         control={form.control}
                         name='email'
                         type="email"
                         disabled={disabled}
                     />
-                    <div className="flex flex-col items-center space-y-4">
+                    <div className="flex flex-col items-center space-y-2">
                             <Button 
                                 disabled={disabled}
                                 onClick={verifyEmail}
@@ -93,12 +93,12 @@ export default function FormEmail({action}: {action: (data:IVerificationSchema) 
                             />
                     </div>
                     {timeLeft !== null && (
-                            <p className="text-xl text-center mt-4">
+                            <p className="text-xl text-center mt-2">
                                Tiempo restante: {formatTime(timeLeft)}
                             </p>
                         )}
 
-                        <div className="flex justify-center p-6">
+                        <div className="flex justify-center p-1">
                             <ReCAPTCHA
                                 sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string}
                                 ref={captchaRef}
@@ -109,7 +109,7 @@ export default function FormEmail({action}: {action: (data:IVerificationSchema) 
                     <Button
                         //disabled={disabled || timeLeft !== null} // Deshabilitar si el temporizador está activo
                         type="submit"
-                        className="w-full md:w-auto px-10 py-3 text-md" // Mantenido el padding horizontal (px-10)
+                        className="w-full md:w-auto px-10 py-2 text-md" // Mantenido el padding horizontal (px-10)
                     >
                         <Send className="mr-2 h-5 w-5" /> {/* Icono añadido */}
                         Enviar

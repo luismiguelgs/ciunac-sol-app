@@ -30,10 +30,10 @@ export default function FormEmailSolicitud()
         setEmail(data.email);
         setOpen(true);
     };
-
-    const redireccionar = (trabajador:boolean, tipo_trabajador:string) => {
+    
+    const redireccionar = ( alumno_ciunac:boolean) => {
         router.push(
-            `/solicitud-certificados/proceso?email=${encodeURIComponent(email)}&tipo_trabajador=${encodeURIComponent(tipo_trabajador)}&trabajador=${encodeURIComponent(trabajador)}`);
+            `/solicitud-ubicacion/proceso?email=${encodeURIComponent(email)}&alumno_ciunac=${encodeURIComponent(alumno_ciunac)}`);
         setOpen(false);
     };
 

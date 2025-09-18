@@ -77,6 +77,20 @@ export default function DetalleSolicitudCard({solicitud, tipo}:Props)
                                     </React.Fragment>
                                 )
                             }
+                            {tipo === 'EXAMEN' && (
+                                <React.Fragment>
+                                    {detalleSolicitud('Trabajador UNAC', solicitud.trabajador ? 'Sí' : 'No')}
+                                    {detalleSolicitud('Alumno antiguo', solicitud.antiguo ? 'Sí' : 'No')}
+                                    {detalleSolicitud('Idioma', solicitud.idioma)}
+                                    {detalleSolicitud('Nivel', solicitud.nivel)}
+                                    {solicitud.img_voucher && detalleSolicitud('Monto Pagado', `S/${solicitud.pago}`)}
+                                    {solicitud.img_voucher && detalleSolicitud('Fecha de Pago', solicitud.fecha_pago)}
+                                    {solicitud.img_voucher && detalleSolicitud('Número de Voucher', solicitud.numero_voucher)}
+                                    {solicitud.img_voucher && detalleSolicitud('Imagen de Voucher', solicitud.img_voucher, true)}
+                                    {solicitud.img_cert_trabajo && detalleSolicitud('Certificado de Trabajo', solicitud.img_cert_trabajo, true)}
+                                    {solicitud.img_cert_estudio && detalleSolicitud('Certificado CIUNAC', solicitud.img_cert_estudio, true)}
+                                </React.Fragment>
+                            )}
                             {tipo === 'BECA' && (<React.Fragment>
                                 {detalleSolicitud('Constancia de Matrícula', solicitud.img_cert_estudio, true)}
                                 {detalleSolicitud('Historial Académico', solicitud.img_dni, true)}

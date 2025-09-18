@@ -36,6 +36,8 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
     const [message, setMessage] = React.useState<React.ReactNode>('')
    
     const { solicitud } = useSolicitudStore()
+
+	console.log(solicitud)
     
     const textos = useStore(useTextsStore, (state) => state.textos)
 
@@ -64,27 +66,29 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
                 setState('EMAIL')
                 setMessage('Solicitud guardada correctamente')
                 //envia un correo electronico confirmando la recepcion de la solicitud
-                await EmailService.sendEmailCertificado(solicitud.email as string, response as string )
+                await EmailService.sendEmailUbicacion(solicitud.email as string, response as string )
                 setOpen(false)
             }
             
-            //redirecciona al usuario a la pagina final de la solicitud
-            router.push(`/solicitud-certificados/finalizar?id=${response}`)
+            //redirecciona al usuario a la pagina final de la solicitud *****************
+            router.push(`/solicitud-ubicacion/finalizar?id=${response}`)
         }
     }
 
     return (
         <div>
             <div className="grid grid-cols-1 gap-6">
+				{/****************************************************************** */}
                 <MyAlert 
                     title='Verifica tus datos'
-                    description={textos?.find(objeto=> objeto.titulo === 'texto_1_final')?.texto}
+                    description={textos?.find(objeto=> objeto.titulo === 'texto_ubicacion_3')?.texto}
                     type='warning'
                 />
-                <DetalleSolicitudCard solicitud={solicitud} tipo='CERTIFICADO' />
+				{/****************************************************************** */}
+                <DetalleSolicitudCard solicitud={solicitud} tipo='EXAMEN' />
                     <MyAlert
                         title='Importante'
-                        description={textos?.find(objeto=> objeto.titulo === 'texto_1_disclamer')?.texto}
+                        description={textos?.find(objeto=> objeto.titulo === 'texto_ubicacion_4')?.texto}
                         type='warning'
                     />
             </div>
