@@ -50,10 +50,10 @@ function SolicitudUbicacionProceso()
 
                 //asignar precio
                 const precio = solicitudes?.filter((cer)=> cer.value === values.tipo_solicitud)[0].precio
+                console.log(precio)
                 setPrecio(precio.toString())
                 break;
             case 1:
-                console.log(values)
                 setSolicitudField('pago', values.pago)
                 setSolicitudField('numero_voucher', values.numero_voucher)
                 setSolicitudField('fecha_pago', (values.fecha_pago as Date).toISOString())
