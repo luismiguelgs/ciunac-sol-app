@@ -7,7 +7,7 @@ import FinData from '@/components/fin-data/fin-data';
 import Documentos from '@/components/documentos';
 import Register from '@/modules/solicitud-ubicacion/components/register';
 import useSolicitudStore from '@/stores/solicitud.store';
-import { useDocumentsStore } from '@/stores/types.stores';
+//import { useDocumentsStore } from '@/stores/types.stores';
 import SolicitudesService from '@/services/solicitudes.service';
 import GeneralDialog from '@/components/dialogs/general-dialog';
 import Image from 'next/image';
@@ -15,7 +15,7 @@ import Image from 'next/image';
 function SolicitudUbicacionProceso()
 {
     const searchParams = useSearchParams()
-    const solicitudes  = useDocumentsStore((state) => state.documents)
+    //const solicitudes  = useDocumentsStore((state) => state.documents)
     const email = searchParams.get('email')
     const trabajador = searchParams.get('trabajador')
     const alumno = searchParams.get('alumno_ciunac')
