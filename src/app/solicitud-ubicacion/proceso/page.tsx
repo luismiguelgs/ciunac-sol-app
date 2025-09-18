@@ -49,7 +49,7 @@ function SolicitudUbicacionProceso()
                 setSolicitudField('celular', values.celular)
 
                 //pendiente de arreglar en produccion no se asigna el precio
-                //console.log(solicitudes)
+                //solicitudes vacio array[]
                 //const precio = solicitudes?.filter((cer)=> cer.value === values.tipo_solicitud)[0].precio
                 const precio = 30
                 setPrecio(precio.toString())
