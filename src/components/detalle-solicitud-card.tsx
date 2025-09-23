@@ -65,7 +65,7 @@ export default function DetalleSolicitudCard({solicitud, tipo}:Props)
                             {
                                 tipo === 'CERTIFICADO' && (
                                     <React.Fragment>
-                                        {detalleSolicitud('Trabajador UNAC', solicitud.trabajador ? 'Sí' : 'No')}
+                                        {detalleSolicitud('Certificado Digital', solicitud.digital ? 'Sí' : 'No')}
                                         {detalleSolicitud('Alumno antiguo', solicitud.antiguo ? 'Sí' : 'No')}
                                         {detalleSolicitud('Idioma', solicitud.idioma)}
                                         {detalleSolicitud('Nivel', solicitud.nivel)}

@@ -28,5 +28,6 @@ export default interface Isolicitud {
     alumno_ciunac?:boolean,
     img_cert_trabajo?:string,
     img_cert_estudio?:string,
+    digital?:boolean,
     creado?:string | Timestamp
 }

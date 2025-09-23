@@ -10,7 +10,8 @@ import Image from "next/image"
 import procesoUno from "@/assets/1.png"
 import procesoDos from "@/assets/2.png"
 import procesoTres from "@/assets/3.png"
-import Download from "@/modules/consulta-solicitud/components/donwload";
+import DownloadCertificado from "@/modules/consulta-solicitud/components/download-certificado";
+import DownloadCargo from "@/modules/consulta-solicitud/components/donwload-cargo";
 import Subjects from "./subjects";
 
 async function getRequests(dni:string){
@@ -79,7 +80,9 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                             )}
                             <Alert className="mt-4">
                                 <AlertDescription>
-                                    Haga clic en el icono PDF o el botón para descargar su cargo. Presente este cargo junto con su DNI en la oficina.<br/><br/>
+                                    Haga clic en el icono PDF o el botón para descargar su cargo. Presente este cargo junto con su DNI en la oficina.
+                                    En caso sea certificado digital, puede descargarlo desde el link proporcionado.
+                                    <br/><br/>
                                     Para consultas:<br/>
                                     📧 ciunac.certificados@unac.edu.pe<br/>
                                     📞 014291931<br/>
@@ -87,7 +90,7 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                 </AlertDescription>
                             </Alert>
                         </div>
-                        <div className="md:w-1/2 space-y-4">
+                        <div className="md:w-1/2 space-y-2">
                             {requests.map((item) => (
                                 <Card key={item.id}>
                                     <CardHeader className="flex flex-row items-center gap-4">
@@ -113,7 +116,7 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                         </div>
                                     </CardHeader>
                                     {item.estado === 'NUEVO' ? (
-                                        <div className="relative h-[320px] w-full">
+                                        <div className="relative h-[300px] w-full">
                                             <Image
                                                 src={procesoUno}
                                                 alt="Proceso"
@@ -123,7 +126,7 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                             />
                                         </div>
                                     ) : item.estado === 'ELABORADO' ? (
-                                        <div className="relative h-[320px] w-full">
+                                        <div className="relative h-[300px] w-full">
                                             <Image
                                                 src={procesoDos}
                                                 alt="Proceso2"
@@ -133,7 +136,7 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                             />
                                         </div>
                                     ) : (
-                                        <div className="relative h-[320px] w-full">
+                                        <div className="relative h-[300px] w-full">
                                             <Image
                                                 src={procesoTres}
                                                 alt="Proceso2"
@@ -144,11 +147,16 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                         </div>
                                     )}
                                     <CardContent>
-                                        {textos && <Download item={item} textos={textos} />}
+                                        {
+                                            textos && item.digital && item.estado === 'ENTREGADO' ? 
+                                            <DownloadCertificado item={item} /> : 
+                                            <DownloadCargo item={item} textos={textos} />
+                                        }
                                     </CardContent>
                                 </Card>
                             ))}
                         </div>
+                       
                     </div>
                 )}
             </div>

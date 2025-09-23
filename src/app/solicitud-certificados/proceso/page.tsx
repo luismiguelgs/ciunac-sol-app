@@ -46,6 +46,12 @@ function SolicitudCertificadoProceso()
                 setSolicitudField('codigo', values.codigo)
                 setSolicitudField('tipo_documento', values.tipo_documento)
                 setSolicitudField('dni', values.dni)
+                //asignar digital
+                if(values.tipo_solicitud === 'CERTIFICADO_DE_ESTUDIO' || values.tipo_solicitud === 'DUPLICADO_DE_CERTIFICADO'){
+                    setSolicitudField('digital', false)
+                }else{
+                    setSolicitudField('digital', true)
+                }
                 //asignar precio
                 const precio = certificados?.filter((cer)=> cer.value === values.tipo_solicitud)[0].precio
                 setPrecio(precio.toString())

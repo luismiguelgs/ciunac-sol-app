@@ -34,6 +34,7 @@ const useSolicitudStore = create<StoreState>((set) => ({
         img_voucher: '',
         img_cert_trabajo: '',
         certificado_trabajo: '',
+        digital: false,
     },
     // Add the missing setSolicitudField function
     setSolicitudField: (field: keyof Isolicitud, value: unknown) => {

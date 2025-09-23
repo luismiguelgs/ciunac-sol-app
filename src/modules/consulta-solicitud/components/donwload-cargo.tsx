@@ -12,7 +12,7 @@ type Props = {
     textos: Itexto[]
 }
 
-export default function Download({item, textos}: Props) {
+export default function DownloadCargo({item, textos}: Props) {
     const descargarPDF = async() => {
         const obj = {
             solicitud: item.tipo_solicitud || 'SOLICITUD DE CERTIFICADO',

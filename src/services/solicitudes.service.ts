@@ -51,8 +51,6 @@ export default class SolicitudesService
         
         let docRef = null
         try{
-			console.log(dataProspecto);
-			
           	docRef = await addDoc(this.db_prospectos, dataProspecto)
         }catch(err){
           console.log(err);
@@ -60,7 +58,8 @@ export default class SolicitudesService
         let newID = null
 
         if(docRef) newID = docRef.id;
-        if(docRef){
+
+        if(docRef){ 
             const dataSolicitud = {
                 solicitud: data.tipo_solicitud,
                 apellidos: data.apellidos.toLocaleUpperCase().trim(),
@@ -70,6 +69,7 @@ export default class SolicitudesService
                 dni:data.dni,
                 pago:+data.pago,
                 idioma:data.idioma,
+                digital: data.digital,
                 tipo_trabajador: data.tipo_trabajador || '',
                 nivel:data.nivel,
                 img_dni: data.img_dni,
@@ -86,7 +86,7 @@ export default class SolicitudesService
                 modificado:serverTimestamp()
             }
             console.log(dataSolicitud);
-		
+            
             try{
               const docRef1 = await addDoc(this.db, dataSolicitud)
               return docRef1.id         
