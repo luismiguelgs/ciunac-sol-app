@@ -20,6 +20,8 @@ import DetalleSolicitudCard from '@/components/detalle-solicitud-card'
 import useSolicitudStore from '@/stores/solicitud.store'
 import useStore from '@/hooks/useStore'
 import { useTextsStore } from '@/stores/types.stores'
+import EstudiantesService from '@/services/estudiantes.service'
+import IEstudiante from '@/interfaces/estudiante.interface'
 
 type Props = {
     activeStep : number
@@ -36,7 +38,6 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
     const [message, setMessage] = React.useState<React.ReactNode>('')
    
     const { solicitud } = useSolicitudStore()
-    
     const textos = useStore(useTextsStore, (state) => state.textos)
 
     const form = useForm<IFinalSchema>({
@@ -53,9 +54,23 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
             setLoading(true)
             setState('SAVE')
             setOpen(true)
-            //guarda la informacion en la base de datos
-            const response = await SolicitudesService.newItem(solicitud as Isolicitud)
-            if(!response){
+            let resEstudiante: IEstudiante | null = null
+            //guarda la informacion en la base de datos guardar o actualizar datos de estudiante
+            if(solicitud.estudianteId){
+                //objeto estudiante
+                resEstudiante = await EstudiantesService.updateItem(solicitud.estudianteId, solicitud)
+            }else{
+                resEstudiante = await EstudiantesService.newItem(solicitud)
+            }
+            if(!resEstudiante){
+                setState('ERROR')
+                setMessage('Error al guardar estudiante')
+                setOpen(true)
+                return
+            }
+            //objeto solicitud
+            const resSolicitud = await SolicitudesService.newItem({...solicitud, estudianteId: resEstudiante.id} as Isolicitud)
+            if(!resSolicitud){
                 setState('ERROR')
                 setMessage('Error al guardar la solicitud')
                 setOpen(true)
@@ -64,12 +79,12 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
                 setState('EMAIL')
                 setMessage('Solicitud guardada correctamente')
                 //envia un correo electronico confirmando la recepcion de la solicitud
-                await EmailService.sendEmailCertificado(solicitud.email as string, response as string )
+                await EmailService.sendEmailCertificado(solicitud.email as string, resSolicitud as string )
                 setOpen(false)
             }
             
             //redirecciona al usuario a la pagina final de la solicitud
-            router.push(`/solicitud-certificados/finalizar?id=${response}`)
+            router.push(`/solicitud-certificados/finalizar?id=${resSolicitud}`)
         }
     }
 
@@ -78,13 +93,13 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
             <div className="grid grid-cols-1 gap-6">
                 <MyAlert 
                     title='Verifica tus datos'
-                    description={textos?.find(objeto=> objeto.titulo === 'texto_1_final')?.texto}
+                    description={textos?.find(objeto=> objeto.codigo === 'TEXTO_1_FINAL')?.contenido}
                     type='warning'
                 />
                 <DetalleSolicitudCard solicitud={solicitud} tipo='CERTIFICADO' />
                     <MyAlert
                         title='Importante'
-                        description={textos?.find(objeto=> objeto.titulo === 'texto_1_disclamer')?.texto}
+                        description={textos?.find(objeto=> objeto.codigo === 'TEXTO_1_DISCLAMER')?.contenido}
                         type='warning'
                     />
             </div>

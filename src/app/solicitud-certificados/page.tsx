@@ -4,9 +4,10 @@ import React from 'react'
 import TypesService from '@/services/types.service'
 import { ITipoSolicitud } from '@/interfaces/types.interface'
 import CertificadosTable from '@/components/certificados-table'
+import { Collection } from '@/services/types.service'
 
 const getCertificates = async (): Promise<ITipoSolicitud[]> => {
-	const res = await TypesService.fetchTypes<ITipoSolicitud>('certificados')
+	const res = await TypesService.fetchItems<ITipoSolicitud>(Collection.Tiposolicitud)
 	return res
 }
 

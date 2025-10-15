@@ -1,7 +1,7 @@
 'use client'
 import useStore from '@/hooks/useStore'
-import { Itexto } from '@/interfaces/types.interface'
-import CargoPdf from '@/modules/consulta-solicitud/components/cargo-pdf'
+import { ITexto } from '@/interfaces/types.interface'
+import CargoPdf from '@/modules/solicitud-certificado/components/cargo-pdf'
 import SolicitudesService from '@/services/solicitudes.service'
 import { useTextsStore } from '@/stores/types.stores'
 import Image from 'next/image'
@@ -21,15 +21,15 @@ function Finish()
     const [data, setData] = React.useState<any>({})
 
     React.useEffect(() => {
-        const getData = async (_id:string) => {
+        const getData = async (_id:number) => {
             const result = await SolicitudesService.getItemId(_id)
             setData(result)
         }
-        getData(id as string)
+        getData(Number(id))
     }, [])
 
     const exportPDF = async() => {
-        const cargoPdfElement = <CargoPdf textos={textos as Itexto[]} obj={data}/>
+        const cargoPdfElement = <CargoPdf textos={textos as ITexto[]} obj={data}/>
         const blobPdf = await pdf(cargoPdfElement).toBlob()
 
         const blobUrl = URL.createObjectURL(blobPdf);
@@ -38,7 +38,7 @@ function Finish()
         const a = document.createElement('a')
         a.style.display = 'none'
         a.href = blobUrl
-        a.download = `${data.dni}-${data.idioma}-${data.nivel}.pdf`
+        a.download = `${data.estudiante.numeroDocumento}-${data.idioma.nombre}-${data.nivel.nombre}.pdf`
 
         // Agregar el enlace al documento y hacer clic para iniciar la descarga
         document.body.appendChild(a);

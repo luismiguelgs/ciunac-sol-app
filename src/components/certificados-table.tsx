@@ -9,7 +9,8 @@ interface CertificadosTableProps {
 }
 
 export default function CertificadosTable({ data }: CertificadosTableProps) {
-  if (!data || data.length === 0) {
+  const filteredData = data.filter(item => item.precio > 0)
+  if (!filteredData || filteredData.length === 0) {
     return (
       <div className="text-sm text-muted-foreground">No hay certificados disponibles.</div>
     )
@@ -25,9 +26,9 @@ export default function CertificadosTable({ data }: CertificadosTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map((item) => (
-            <TableRow key={item.id ?? item.value}>
-              <TableCell className="font-medium">{item.label}</TableCell>
+          {filteredData.map((item,index) => (
+            <TableRow key={item.id ?? index}>
+              <TableCell className="font-medium">{item.solicitud}</TableCell>
               <TableCell className="text-right">{formatCurrency(+item.precio)}</TableCell>
             </TableRow>
           ))}

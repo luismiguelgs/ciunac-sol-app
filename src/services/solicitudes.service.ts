@@ -1,113 +1,42 @@
-import Isolicitud from '@/interfaces/solicitud.interface';
-import { firestore } from '@/lib/firebase';
+import Isolicitud, { ISolicitudRes } from '@/interfaces/solicitud.interface';
+import { apiFetch } from '@/lib/api.service';
 import { obtenerPeriodo } from '@/lib/utils';
-import { collection, query, where, orderBy, getDocs, Timestamp, serverTimestamp, addDoc, doc, getDoc } from 'firebase/firestore';
 
 export default class SolicitudesService 
 {
-    private static db = collection(firestore, 'solicitudes')
-    private static db_prospectos = collection(firestore, 'prospectos')
+    private static collection = 'solicitudes'
     
-    public static async searchItemByDni(dni:string){
-		
-        const q = query(
-            this.db,
-            where('dni','==',dni), 
-            orderBy('creado','desc')
-        )
-        // Obtenemos los documentos que cumplen la consulta
-        const  querySnapshot = await getDocs(q)
-
-        // Devolvemos un array con los datos de los documentos, incluyendo el ID
-        return querySnapshot.docs.map((doc) => {
-            const data = doc.data();
-            // Convertir el timestamp solo si es una instancia de Timestamp
-            if (data.creado instanceof Timestamp) {
-                data.creado = data.creado.toDate();
-            }
-            if (data.modificado instanceof Timestamp) {
-                data.modificado = data.modificado.toDate();
-            }
-            data.id = doc.id;
-            return data;
-        });
-    }
-    public static async newItem(data:Isolicitud):Promise<string>
+    
+    public static async searchItemByDni(dni:string):Promise<ISolicitudRes[]>
     {
-        const dataProspecto = {
-            dni: data.dni,
-            nombres: data.nombres.toLocaleUpperCase().trim(),
-            apellidos: data.apellidos.toLocaleUpperCase().trim(),
-            telefono: data.celular.trim(),
-            facultad : data.facultad,
-            escuela: data.escuela || '',
-            email: data.email,
-            codigo: data.codigo || '',
-            trabajador : data.trabajador,
-            alumno_ciunac : data.alumno_ciunac || false,
-            creado: serverTimestamp(),
-            modificado : serverTimestamp()
-        }
-        
-        let docRef = null
-        try{
-          	docRef = await addDoc(this.db_prospectos, dataProspecto)
-        }catch(err){
-          console.log(err);
-        }
-        let newID = null
-
-        if(docRef) newID = docRef.id;
-
-        if(docRef){ 
-            const dataSolicitud = {
-                solicitud: data.tipo_solicitud,
-                apellidos: data.apellidos.toLocaleUpperCase().trim(),
-                nombres: data.nombres.toLocaleUpperCase().trim(),
-                periodo : obtenerPeriodo(),
-                estado:'NUEVO',
-                dni:data.dni,
-                pago:+data.pago,
-                idioma:data.idioma,
-                digital: data.digital,
-                tipo_trabajador: data.tipo_trabajador || '',
-                nivel:data.nivel,
-                img_dni: data.img_dni,
-                img_cert_trabajo: data.trabajador ? data.img_cert_trabajo : '',
-                img_cert_estudio: data.alumno_ciunac ? data.img_cert_estudio : '',
-                img_voucher: data.img_voucher,
-                numero_voucher:data.numero_voucher || '',
-                fecha_pago: data.fecha_pago || '',
-                manual:false,
-		        trabajador: data.trabajador,
-                alumno_id: newID,
-                certificado_trabajo: data.certificado_trabajo || '',
-                creado:serverTimestamp(),
-                modificado:serverTimestamp()
-            }
-            console.log(dataSolicitud);
-            
-            try{
-              const docRef1 = await addDoc(this.db, dataSolicitud)
-              return docRef1.id         
-            }catch(err){
-              console.log(err);
-            }            
-        } 
-        return ''
+      const response = await apiFetch<ISolicitudRes[]>(`${this.collection}/documento/${dni}`, 'GET')
+      return response
     }
-    public static async getItemId(id:string){
-		const docRef = doc(this.db, id)
-		const docSnap = await getDoc(docRef)
-		if (docSnap.exists()) {
-		    const data = docSnap.data()
-			data.creado = (data.creado as Timestamp).toDate();
-			data.modificado = (data.modificado as Timestamp).toDate();
-			data.id = docSnap.id
-			return data
-		} else {
-		  console.log("No such document!");
-		  return null
-		}
+    
+    public static async newItem(data:Isolicitud):Promise<string| null>
+    {
+        const solicitudData = {
+            estudianteId: data.estudianteId,
+            tipoSolicitudId: +data.tipo_solicitud,
+            idiomaId: +data.idioma,
+            nivelId: +data.nivel,
+            estadoId: 1,
+            periodo: obtenerPeriodo(),
+            alumnoCiunac: data.alumno_ciunac,
+            fechaPago: data.fecha_pago,
+            pago: +data.pago,
+            digital: data.digital,
+            numeroVoucher: data.numero_voucher,
+            imgCertEstudio: data.img_cert_estudio,
+            imgVoucher: data.img_voucher,
+        }
+        const response = await apiFetch<any>(`${this.collection}`, 'POST', solicitudData)
+        return response.id
+    }
+    
+    public static async getItemId(id:number):Promise<ISolicitudRes>{
+		const response = await apiFetch<ISolicitudRes>(`${this.collection}/${id}`, 'GET')
+		return response
 	}
+    
 }

@@ -1,11 +1,11 @@
 import VerificacionEmail from '@/components/verificacion-email'
 import { ITipoSolicitud } from '@/interfaces/types.interface'
 import VerifySchedules from '@/modules/solicitud-ubicacion/components/verify-schedules'
-import TypesService from '@/services/types.service'
+import TypesService, { Collection } from '@/services/types.service'
 import CertificadosTable from '@/components/certificados-table'
 
 const getCertificates = async () => {
-    const res = await TypesService.fetchTypes<ITipoSolicitud>('certificados')
+    const res = await TypesService.fetchItems<ITipoSolicitud>(Collection.Tiposolicitud)
     return res
 }
 

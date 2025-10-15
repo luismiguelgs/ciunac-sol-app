@@ -19,6 +19,9 @@ import { StepperControl } from '@/components/stepper';
 import UploadImage from '@/components/upload-image';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useSearchParams } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Search, Loader2 } from 'lucide-react';
+import EstudiantesService from '@/services/estudiantes.service';
 
 type Props = {
     activeStep: number,
@@ -35,6 +38,7 @@ export default function BasicData({activeStep, setActiveStep, steps, handleNext}
     const textos = useStore(useTextsStore, (state) => state.textos);
     const { solicitud } = useSolicitudStore() 
     const [imageVal, setImageVal] = React.useState<boolean>(false)
+    const [searching, setSearching] = React.useState(false)
 
     const phoneRef = useMask({ mask: '_________', replacement: { _: /\d/ } });
     //const codeRef = useMask({ mask: '__________', replacement: { _: /\d/ } });
@@ -54,7 +58,7 @@ export default function BasicData({activeStep, setActiveStep, steps, handleNext}
             img_dni: solicitud?.img_dni?? initialValues.img_dni,
             escuela: solicitud?.escuela ?? initialValues.escuela,
             codigo: solicitud?.codigo ?? initialValues.codigo,
-            tipo_documento: solicitud?.tipo_documento ?? 'PE01',
+            tipo_documento: solicitud?.tipo_documento ?? initialValues.tipo_documento,
             dni: solicitud.dni ?? initialValues.dni,
             celular: solicitud.celular ?? initialValues.celular,
         }
@@ -71,14 +75,41 @@ export default function BasicData({activeStep, setActiveStep, steps, handleNext}
 		}	
     }
 
+    const handleSearch = async () => {
+        const dni = form.getValues('dni')?.trim()
+            if (!dni) {
+                // Puedes reemplazar por un toast si lo tienes disponible
+                alert('Ingrese el número de documento para buscar')
+                return
+            }
+            try {
+                setSearching(true)
+                const data = await EstudiantesService.fetchItemByDNI(dni)
+                if (data) {
+                    form.setValue('apellidos', data.apellidos ?? '')
+                    form.setValue('nombres', data.nombres ?? '')
+                    form.setValue('celular', data.celular ?? '')
+                    form.setValue('estudianteId', data.id ?? '')
+                } else {
+                    alert('No se encontraron datos para el documento ingresado')
+                }
+            } catch (e) {
+                console.error(e)
+                alert('Ocurrió un error al buscar los datos')
+            } finally {
+                setSearching(false)
+            }
+    }
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" autoComplete="off">
                 <MyAlert 
                     title="Atención" 
-                    description={textos?.find(objeto=> objeto.titulo === 'texto_ubicacion_2')?.texto}
+                    description={textos?.find(objeto=> objeto.codigo === 'TEXTO_UBICACION_1')?.contenido}
                     type="warning"
                 />
+                <input type="hidden" {...form.register('estudianteId')} />
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className='col-span-2'>
                         <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
@@ -86,6 +117,40 @@ export default function BasicData({activeStep, setActiveStep, steps, handleNext}
                                 <CardTitle className="text-lg font-bold text-primary">Información Personal</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <RadioGroupField
+                                        label="Tipo de Documento"
+                                        name="tipo_documento"
+                                        options={[
+                                            { value: "DNI", label: "Documento de Identidad" },
+                                            { value: "CE", label: "Carnet de Extranjería" },
+                                            { value: "PASAPORTE", label: "Pasaporte" },
+                                        ]}
+                                        control={form.control}
+                                    />
+                                    <div style={{'marginTop':-2}}>
+                                        <InputField
+                                            label="Número de Documento"
+                                            name="dni"
+                                            inputRef={dniRef}
+                                            placeholder="Ingresar número de documento..."
+                                            control={form.control}
+                                        />
+                                        <Button type="button" onClick={handleSearch} disabled={searching} className="md:mt-7 w-full">
+                                        {searching ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                Buscando...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Search className="mr-2 h-4 w-4" />
+                                                Buscar Documento de Identidad
+                                            </>
+                                        )}
+                                        </Button>
+                                    </div>
+                                </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <InputField
                                         label="Apellidos"
@@ -119,27 +184,7 @@ export default function BasicData({activeStep, setActiveStep, steps, handleNext}
                                         />
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <RadioGroupField
-                                        label="Tipo de Documento"
-                                        name="tipo_documento"
-                                        options={[
-                                            { value: "PE01", label: "Documento de Identidad" },
-                                            { value: "PE02", label: "Carnet de Extranjería" },
-                                            { value: "PE03", label: "Pasaporte" },
-                                        ]}
-                                        control={form.control}
-                                    />
-                                    <div style={{'marginTop':-2}}>
-                                        <InputField
-                                            label="Número de Documento"
-                                            name="dni"
-                                            inputRef={dniRef}
-                                            placeholder="Ingresar número de documento..."
-                                            control={form.control}
-                                        />
-                                    </div>
-                                </div>
+                                
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <InputField
                                         label="Celular"

@@ -2,7 +2,7 @@
 import { Document, Page, StyleSheet, Image, Text } from "@react-pdf/renderer"
 import logoCiunac from '@/assets/logo-ciunac.jpg'
 import React from "react"
-import { Itexto } from '@/interfaces/types.interface'
+import { ITexto } from '@/interfaces/types.interface'
 
 const styles = StyleSheet.create({
     page:{
@@ -34,19 +34,19 @@ const styles = StyleSheet.create({
 })
 
 type Props = {
-    textos: Itexto[],
+    textos: ITexto[],
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     obj: any
 }
 export default function CargoPdf({textos, obj}:Props) 
 {
-    function message(text:string, textos:Itexto[]):string{
-        const objEncontrado = textos.find(objeto=> objeto.titulo === text)
+    function message(text:string, textos:ITexto[]):string{
+        const objEncontrado = textos.find(objeto=> objeto.codigo === text)
         if (!objEncontrado) {
             console.warn(`Texto no encontrado para el título: ${text}`);
             return '';
         }
-        return objEncontrado.texto;
+        return objEncontrado.contenido;
     }
 
     return (
@@ -56,7 +56,7 @@ export default function CargoPdf({textos, obj}:Props)
                     <Text style={styles.title}>CARGO PARA LA ENTREGA DE CERTIFICADOS</Text>
                     <Text style={styles.text}>SE HA COMPLETADO EL PROCEDIMIENTO!</Text>
                     <Text style={styles.text}>
-                        {message('texto_1_final',textos)}
+                        {message('TEXTO_1_FINAL',textos)}
                     </Text>
                     <Text style={styles.data}>{`Tipo de Documento: ${obj.solicitud.toLocaleUpperCase()}`}</Text>
                     <Text style={styles.data}>{`Fecha de Ingreso: ${obj.creado}`}</Text>
@@ -69,10 +69,10 @@ export default function CargoPdf({textos, obj}:Props)
                     <Text style={styles.data}>{`Número de Voucher: ${obj.voucher}`}</Text>
                     <Text style={styles.text}>Plazo de entrega: 10 dias hábiles</Text>
                     <Text style={styles.text}>
-                        {message('texto_1_disclamer',textos)}
+                        {message('TEXTO_1_DISCLAMER',textos)}
                     </Text>
                     <Text style={styles.text}>
-                        {message('texto_2_disclamer',textos)}
+                        {message('TEXTO_2_DISCLAMER',textos)}
                     </Text>
                 </Page>
         </Document>

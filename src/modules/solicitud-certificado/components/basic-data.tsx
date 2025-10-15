@@ -8,7 +8,7 @@ import { RadioGroupField } from "@/components/forms/radio-group.field"
 import { useMask } from '@react-input/mask';
 import SelectFacultad from "@/components/forms/select-facultad.field"
 import { MySelect } from "@/components/forms/myselect.field"
-import { ESCUELAS, NIVEL } from "@/lib/constants" // Asumiendo que ESCUELAS tiene { value: string, label: string, facultad: string }[]
+import { NIVEL } from "@/lib/constants" // Asumiendo que ESCUELAS tiene { value: string, label: string, facultad: string }[]
 import React from "react" // Importa React para useEffect
 import SelectSolicitud from "@/components/forms/select-solicitud"
 import { SelectLanguage } from "@/components/forms/select-lang.field"
@@ -18,6 +18,11 @@ import useSolicitudStore from "@/stores/solicitud.store"
 import MyAlert from "@/components/forms/myAlert"
 import useStore from "@/hooks/useStore"
 import { useTextsStore } from "@/stores/types.stores"
+import { Button } from "@/components/ui/button"
+import { Search, Loader2 } from "lucide-react"
+import EstudiantesService from "@/services/estudiantes.service"
+import { IEscuela } from "@/interfaces/types.interface"
+import useEscuelas from "@/hooks/useEscuelas"
 
 type Props = {
     activeStep : number
@@ -31,6 +36,7 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
     const textos = useStore(useTextsStore, (state) => state.textos);
 
     const { solicitud } = useSolicitudStore()
+    const escuelas = useEscuelas()
     const phoneRef = useMask({ mask: '_________', replacement: { _: /\d/ } });
     const codeRef = useMask({ mask: '__________', replacement: { _: /\d/ } });
     const dniRef = useMask({ mask: '_________', replacement: { _: /[\da-zA-Z]/ } });
@@ -48,7 +54,7 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
             facultad: solicitud?.facultad ?? initialValues.facultad,
             escuela: solicitud?.escuela ?? initialValues.escuela,
             codigo: solicitud?.codigo ?? initialValues.codigo,
-            tipo_documento: solicitud?.tipo_documento ?? 'PE01',
+            tipo_documento: solicitud?.tipo_documento ?? initialValues.tipo_documento,
             dni: solicitud.dni ?? initialValues.dni,
             celular: solicitud.celular ?? initialValues.celular,
         }
@@ -63,7 +69,7 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
             return []; // Si no hay facultad seleccionada, no mostrar escuelas
         }
         // Asume que cada escuela en ESCUELAS tiene una propiedad 'facultad' que coincide con el 'value' de la facultad
-        return ESCUELAS.filter(escuela => escuela.facultad === selectedFacultad);
+        return escuelas?.filter((escuela:IEscuela) => escuela.facultadId === Number(selectedFacultad));
     }, [selectedFacultad]);
 
     // 3. Opcional: Resetea el campo 'escuela' cuando cambia la facultad
@@ -76,7 +82,36 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
 
 
     const onSubmit = (data:IBasicInfoSchema) => {
+        //alert(JSON.stringify(data))
         handleNext(data)
+    }
+
+    const [searching, setSearching] = React.useState(false)
+
+    const handleSearch = async () => {
+        const dni = form.getValues('dni')?.trim()
+        if (!dni) {
+            // Puedes reemplazar por un toast si lo tienes disponible
+            alert('Ingrese el número de documento para buscar')
+            return
+        }
+        try {
+            setSearching(true)
+            const data = await EstudiantesService.fetchItemByDNI(dni)
+            if (data) {
+                form.setValue('apellidos', data.apellidos ?? '')
+                form.setValue('nombres', data.nombres ?? '')
+                form.setValue('celular', data.celular ?? '')
+                form.setValue('estudianteId', data.id ?? '')
+            } else {
+                alert('No se encontraron datos para el documento ingresado')
+            }
+        } catch (e) {
+            console.error(e)
+            alert('Ocurrió un error al buscar los datos')
+        } finally {
+            setSearching(false)
+        }
     }
 
     return (
@@ -85,13 +120,13 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
                 <div className="grid grid-cols-1 gap-6">
                     <MyAlert 
                         title="Atención" 
-                        description={textos?.find(objeto=> objeto.titulo === 'texto_1_basico')?.texto}
+                        description={textos?.find(objeto=> objeto.codigo === 'TEXTO_1_BASICO')?.contenido}
                         type="warning"
                     />
-                    {/* Card 1: Información Personal - Ocupa todo el ancho con 3 columnas */}
+                    {/* Card 1: Información Solicitud - Ocupa todo el ancho con 3 columnas */}
                     <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
                         <CardHeader>
-                            <CardTitle className="text-lg font-bold text-primary">Información Personal</CardTitle>
+                            <CardTitle className="text-lg font-bold text-primary">Información Solicitud</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -108,13 +143,57 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
                                         name="nivel"
                                         control={form.control}
                                         label="Nivel"
+                                        description="Selecciona tu nivel de idioma"
                                         placeholder='Selecciona un nivel'
                                         options={NIVEL}
                                     />
                                 </div>
                             </div>
-                            
+                        </CardContent>
+                    </Card>
+                    {/* Card 2: Información Personal - Ocupa todo el ancho con 3 columnas */}
+                    <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
+                        <CardHeader>
+                            <CardTitle className="text-lg font-bold text-primary">Información Personal</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                <RadioGroupField
+                                    label="Tipo de Documento"
+                                    name="tipo_documento"
+                                    options={[
+                                        { value: "DNI", label: "Documento de Identidad (DNI)" },
+                                        { value: "CE", label: "Carnet de Extranjería" },
+                                        { value: "PASAPORTE", label: "Pasaporte" },
+                                    ]}
+                                    control={form.control}
+                                />
+                                
+                                    <InputField
+                                        label="Número de Documento"
+                                        name="dni"
+                                        inputRef={dniRef}
+                                        placeholder="Ingresar número de documento..."
+                                        control={form.control}
+                                    />
+                                    <Button type="button" onClick={handleSearch} disabled={searching} className="md:mt-9">
+                                        {searching ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                Buscando...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Search className="mr-2 h-4 w-4" />
+                                                Buscar Documento de Identidad
+                                            </>
+                                        )}
+                                    </Button>
+                                
+                                
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                <input type="hidden" {...form.register('estudianteId')} />
                                 <InputField
                                     label="Apellidos"
                                     name="apellidos"
@@ -129,6 +208,8 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
                                     placeholder="Ingresar nombres..."
                                     control={form.control}
                                 />
+                                
+                                {/* Celda vacía para mantener la estructura de 3 columnas */}
                                 <InputField
                                     label="Celular"
                                     name="celular"
@@ -137,32 +218,8 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
                                     control={form.control}
                                     description=""
                                 />
-                                
-                                
                             </div>
                             
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                
-                                <RadioGroupField
-                                    label="Tipo de Documento"
-                                    name="tipo_documento"
-                                    options={[
-                                        { value: "PE01", label: "Documento de Identidad" },
-                                        { value: "PE02", label: "Carnet de Extranjería" },
-                                        { value: "PE03", label: "Pasaporte" },
-                                    ]}
-                                    control={form.control}
-                                />
-                                <InputField
-                                    label="Número de Documento"
-                                    name="dni"
-                                    inputRef={dniRef}
-                                    placeholder="Ingresar número de documento..."
-                                    control={form.control}
-                                />
-                                {/* Celda vacía para mantener la estructura de 3 columnas */}
-                                <div></div>
-                            </div>
                         </CardContent>
                     </Card>
 
@@ -196,6 +253,8 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
                                     placeholder={selectedFacultad ? "Selecciona una escuela" : "Selecciona una facultad primero"}
                                     options={filteredEscuelas}
                                     disabled={!selectedFacultad}
+                                    getOptionValue={(item:IEscuela) => String(item.id)}
+                                    getOptionLabel={(item:IEscuela) => item.nombre}
                                 />
                                 <InputField
                                     label="Código"

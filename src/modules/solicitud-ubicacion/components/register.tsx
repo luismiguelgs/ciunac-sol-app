@@ -20,6 +20,8 @@ import DetalleSolicitudCard from '@/components/detalle-solicitud-card'
 import useSolicitudStore from '@/stores/solicitud.store'
 import useStore from '@/hooks/useStore'
 import { useTextsStore } from '@/stores/types.stores'
+import EstudiantesService from '@/services/estudiantes.service'
+import IEstudiante from '@/interfaces/estudiante.interface'
 
 type Props = {
     activeStep : number
@@ -55,9 +57,23 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
             setLoading(true)
             setState('SAVE')
             setOpen(true)
+            let resEstudiante: IEstudiante | null = null
+            //guarda la informacion en la base de datos guardar o actualizar datos de estudiante
+            if(solicitud.estudianteId){
+                //objeto estudiante
+                resEstudiante = await EstudiantesService.updateItem(solicitud.estudianteId, solicitud)
+            }else{
+                resEstudiante = await EstudiantesService.newItem(solicitud)
+            }
+            if(!resEstudiante){
+                setState('ERROR')
+                setMessage('Error al guardar estudiante')
+                setOpen(true)
+                return
+            }
             //guarda la informacion en la base de datos
-            const response = await SolicitudesService.newItem(solicitud as Isolicitud)
-            if(!response){
+            const resSolicitud = await SolicitudesService.newItem({...solicitud, estudianteId: resEstudiante.id} as Isolicitud)
+            if(!resSolicitud){
                 setState('ERROR')
                 setMessage('Error al guardar la solicitud')
                 setOpen(true)
@@ -66,12 +82,12 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
                 setState('EMAIL')
                 setMessage('Solicitud guardada correctamente')
                 //envia un correo electronico confirmando la recepcion de la solicitud
-                await EmailService.sendEmailUbicacion(solicitud.email as string, response as string )
+                await EmailService.sendEmailUbicacion(solicitud.email as string, resSolicitud as string )
                 setOpen(false)
             }
             
             //redirecciona al usuario a la pagina final de la solicitud *****************
-            router.push(`/solicitud-ubicacion/finalizar?id=${response}`)
+            router.push(`/solicitud-ubicacion/finalizar?id=${resSolicitud}`)
         }
     }
 
@@ -81,14 +97,14 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
 				{/****************************************************************** */}
                 <MyAlert 
                     title='Verifica tus datos'
-                    description={textos?.find(objeto=> objeto.titulo === 'texto_ubicacion_3')?.texto}
+                    description={textos?.find(objeto=> objeto.codigo === "TEXTO_UBICACION_3")?.contenido}
                     type='warning'
                 />
 				{/****************************************************************** */}
                 <DetalleSolicitudCard solicitud={solicitud} tipo='EXAMEN' />
                     <MyAlert
                         title='Importante'
-                        description={textos?.find(objeto=> objeto.titulo === 'texto_ubicacion_4')?.texto}
+                        description={textos?.find(objeto=> objeto.codigo === "TEXTO_UBICACION_4")?.contenido}
                         type='warning'
                     />
             </div>

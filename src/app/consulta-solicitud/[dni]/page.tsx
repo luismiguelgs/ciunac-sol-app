@@ -1,7 +1,4 @@
-import Isolicitud from "@/interfaces/solicitud.interface";
-import { Itexto } from "@/interfaces/types.interface";
 import SolicitudesService from "@/services/solicitudes.service";
-import TypesService from "@/services/types.service";
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -12,11 +9,11 @@ import procesoDos from "@/assets/2.png"
 import procesoTres from "@/assets/3.png"
 import DownloadCertificado from "@/modules/consulta-solicitud/components/download-certificado";
 import DownloadCargo from "@/modules/consulta-solicitud/components/donwload-cargo";
-import Subjects from "./subjects";
+import TextosService from "@/services/text.service";
 
 async function getRequests(dni:string){
     try {
-        const res = await SolicitudesService.searchItemByDni(dni) as Isolicitud[];
+        const res = await SolicitudesService.searchItemByDni(dni);
         return res;
     } catch (error) {
         console.error('Error fetching requests:', error);
@@ -25,7 +22,7 @@ async function getRequests(dni:string){
 }
 async function getTextos(){
     try {
-        const res = await TypesService.fetchTypes<Itexto>('textos') as Itexto[];
+        const res = await TextosService.fetchItems();
         return res;
     } catch (error) {
         console.error('Error fetching textos:', error);
@@ -67,14 +64,14 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                 Consulta del Estado de su Solicitud
                             </h1>
                             <h2 className="text-2xl font-bold text-center md:text-left">
-                                {`${requests[0].apellidos} ${requests[0].nombres}`}
+                                {`${requests[0].estudiante.apellidos} ${requests[0].estudiante.nombres}`}
                             </h2>
                             <p className="text-muted-foreground text-center md:text-left">DNI/CE/PASAPORTE: {dni}</p>
                             {textos && (
                                 <Alert>
                                     <AlertDescription>
                                         {/* Usa la función auxiliar aquí */}
-                                        {renderStyledText(textos.find(objeto => objeto.titulo === 'texto_ubicacion_5')?.texto)}
+                                        {renderStyledText(textos.find(objeto => objeto.codigo === 'TEXTO_UBICACION_5')?.contenido)}
                                     </AlertDescription>
                                 </Alert>
                             )}
@@ -96,9 +93,9 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                     <CardHeader className="flex flex-row items-center gap-4">
                                         <Avatar>
                                             <AvatarFallback>
-                                                {item.estado === 'NUEVO' ? (
+                                                {item.estado.nombre === 'NUEVO' ? (
                                                     <HourglassIcon className="h-4 w-4 text-blue-500" />
-                                                ) : item.estado === 'ELABORADO' ? (
+                                                ) : item.estado.nombre === 'ELABORADO' ? (
                                                     <CheckCircleIcon className="h-4 w-4 text-green-500" />
                                                 ) : (
                                                     <ThumbsUpIcon className="h-4 w-4" />
@@ -106,16 +103,19 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                             </AvatarFallback>
                                         </Avatar>
                                         <div className="flex flex-col w-full gap-1">
-                                            <p className="text-sm font-medium">{item.tipo_solicitud}</p>
+                                            <p className="text-sm font-medium">{item.tiposSolicitud.solicitud}</p>
                                             <div className="flex items-center justify-between">
                                                 <p className="text-base text-muted-foreground">
-                                                    {item.creado? new Date(item.creado as string).toLocaleDateString('es-ES'): ''}
+                                                    {item.creadoEn? new Date(item.creadoEn as string).toLocaleDateString('es-ES'): ''}
                                                 </p>
-                                                <Subjects item={item} />
+                                                <p className="text-md text-muted-foreground">
+                                                    Idioma: <span className="font-medium">{ item.idioma?.nombre }</span>{' '}
+                                                    Nivel: <span className="font-medium">{item.nivel?.nombre}</span>
+                                                </p>
                                             </div>
                                         </div>
                                     </CardHeader>
-                                    {item.estado === 'NUEVO' ? (
+                                    {item.estado.nombre === 'NUEVO' ? (
                                         <div className="relative h-[300px] w-full">
                                             <Image
                                                 src={procesoUno}
@@ -125,7 +125,7 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                                 className="object-contain"
                                             />
                                         </div>
-                                    ) : item.estado === 'ELABORADO' ? (
+                                    ) : item.estado.nombre === 'ELABORADO' ? (
                                         <div className="relative h-[300px] w-full">
                                             <Image
                                                 src={procesoDos}
@@ -148,7 +148,7 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                     )}
                                     <CardContent>
                                         {
-                                            textos && item.digital && item.estado === 'ENTREGADO' ? 
+                                            textos && item.digital && item.estado.nombre === 'ENTREGADO' ? 
                                             <DownloadCertificado item={item} /> : 
                                             <DownloadCargo item={item} textos={textos} />
                                         }
@@ -156,7 +156,6 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                 </Card>
                             ))}
                         </div>
-                       
                     </div>
                 )}
             </div>

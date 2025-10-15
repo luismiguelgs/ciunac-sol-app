@@ -23,20 +23,20 @@ import { Skeleton } from "../ui/skeleton"
 
 const getIconByCode = (code:string) => {
     switch (code) {
-        case 'FRANCES':
+        case '1':
             code = 'FRA-R'
             break;
-        case 'INGLES':
+        case '2':
+            code = 'POR-R'
+            break;
+        case '3':
             code = 'ING-R'
             break;
-        case 'CHINO':
-            code = 'CHI-R'
-            break;
-        case 'ITALIANO':
+        case '4':
             code = 'ITA-R'
             break;
-        case 'PORTUGUES':
-            code = 'POR-R'
+        case '6':
+            code = 'CHI-R'
             break;
     }
     const icons = {
@@ -66,7 +66,7 @@ export function SelectLanguage({name, control, programs=[], ubicacion=false}:Pro
 
     if (ubicacion && data){
         filteredData = data.filter(program => 
-            !['FRANCES', 'QUECHUA', 'CHINO'].includes(program.value)
+            ![1, 5, 6].includes(Number(program.id))
         )
     }
 
@@ -99,12 +99,12 @@ export function SelectLanguage({name, control, programs=[], ubicacion=false}:Pro
                                     <React.Fragment>
                                         {
                                             filteredData?.map((program, index) => (
-                                                <SelectItem key={index} value={program.value} className="py-2">
+                                                <SelectItem key={index} value={String(program.id)} className="py-2">
                                                     <div className="flex items-center gap-3 w-full pl-0.5">
                                                         <div className="flex-shrink-0 transform origin-center scale-150 w-7 h-7 flex items-center justify-center">
-                                                            {getIconByCode(program.value)}
+                                                            {getIconByCode(String(program.id))}
                                                         </div>
-                                                        <span className="flex-1">{program.label}</span>
+                                                        <span className="flex-1">{program.nombre}</span>
                                                     </div>
                                                 </SelectItem>
                                             ))

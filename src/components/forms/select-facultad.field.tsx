@@ -57,10 +57,10 @@ export default function SelectFacultad({name, control, disabled=false}:Props)
                         <SelectContent className="w-full min-w-[300px]">
                             {
                                 // Filtrar el array para excluir el item con value 'PAR' antes de mapear
-                                data?.filter(item => item.value !== 'PAR')
+                                data?.filter(item => item.codigo !== 'PAR')
                                     .map((item, index) => (
-                                        <SelectItem key={item.value ?? index} value={item.value} className="py-2">
-                                            {item.label}
+                                        <SelectItem key={item.codigo ?? index} value={String(item.id)} className="py-2">
+                                            {item.nombre}
                                         </SelectItem>
                                     ))
                             }

@@ -7,7 +7,6 @@ import FinData from '@/components/fin-data/fin-data';
 import Documentos from '@/components/documentos';
 import Register from '@/modules/solicitud-ubicacion/components/register';
 import useSolicitudStore from '@/stores/solicitud.store';
-//import { useDocumentsStore } from '@/stores/types.stores';
 import SolicitudesService from '@/services/solicitudes.service';
 import GeneralDialog from '@/components/dialogs/general-dialog';
 import Image from 'next/image';
@@ -15,9 +14,7 @@ import Image from 'next/image';
 function SolicitudUbicacionProceso()
 {
     const searchParams = useSearchParams()
-    //const solicitudes  = useDocumentsStore((state) => state.documents)
     const email = searchParams.get('email')
-    const trabajador = searchParams.get('trabajador')
     const alumno = searchParams.get('alumno_ciunac')
 
     const { setSolicitudField } = useSolicitudStore()
@@ -28,7 +25,7 @@ function SolicitudUbicacionProceso()
     // Cálculo dinámico de pasos
     const baseSteps = ["Datos básicos", "Datos de Pago", "Finalizar"];
     const optionalSteps = [];
-    if (trabajador === 'true' || alumno === 'true') optionalSteps.push("Documentos");
+    if (alumno === 'true') optionalSteps.push("Documentos");
     const steps = [...baseSteps.slice(0, 2), ...optionalSteps, ...baseSteps.slice(2)];
 
      // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,7 +33,6 @@ function SolicitudUbicacionProceso()
         switch(activeStep){
             case 0:
                 setSolicitudField('email', email)
-                setSolicitudField('trabajador', trabajador==='true')
                 setSolicitudField('alumno_ciunac', alumno==='true')
                 setSolicitudField('tipo_solicitud', values.tipo_solicitud)
                 setSolicitudField('nombres', values.nombres)
@@ -47,6 +43,7 @@ function SolicitudUbicacionProceso()
                 setSolicitudField('tipo_documento', values.tipo_documento)
                 setSolicitudField('dni', values.dni)
                 setSolicitudField('celular', values.celular)
+                setSolicitudField('estudianteId', values.estudianteId)
 
                 //pendiente de arreglar en produccion no se asigna el precio
                 //solicitudes vacio array[]
@@ -61,9 +58,6 @@ function SolicitudUbicacionProceso()
                 setSolicitudField('img_voucher', values.img_voucher)
                 break;
             case 2:
-                if(trabajador === 'true'){
-                    setSolicitudField('img_cert_trabajo', values.img_cert_trabajo)
-                }
                 if(alumno === 'true'){
                     setSolicitudField('img_cert_estudio', values.img_cert_estudio)
                 }
@@ -148,7 +142,7 @@ export default function ProcesoUbicacionPage()
 async function verificarDuplicidad(dni: string, idioma:string) {
     const solicitud = await SolicitudesService.searchItemByDni(dni)
     //filtrar si la solicitud es nueva y del mismo idioma
-    const nueva = solicitud.filter((s) => s.estado === 'NUEVO' && s.idioma === idioma)
+    const nueva = solicitud.filter((s) => s.estadoId === 1 && s.idiomaId === +idioma)
     //si es de otro idioma no mostrar alerta
     return nueva.length > 0
 }

@@ -4,6 +4,11 @@ import Isolicitud from '@/interfaces/solicitud.interface'
 import { Card, CardContent, CardHeader } from './ui/card'
 import Image from 'next/image'
 import { Separator } from './ui/separator'
+import { NIVEL } from '@/lib/constants'
+import useSolicitudes from '@/hooks/useSolicitudes'
+import useFacultades from '@/hooks/useFacultades'
+import useEscuelas from '@/hooks/useEscuelas'
+import useSubjects from '@/hooks/useSubjects'
 
 function detalleSolicitud(titulo:string, valor:string|undefined, link:boolean = false) {
     return (
@@ -25,10 +30,14 @@ type Props = {
 
 export default function DetalleSolicitudCard({solicitud, tipo}:Props) 
 {
+    const tiposSolicitud = useSolicitudes()
+    const facultades  = useFacultades()//useStore(useFacultiesStore, (state) => state.faculties)
+    const escuelas = useEscuelas()//useStore(useEscuelasStore, (state) => state.escuelas)
+    const { data: idiomas } = useSubjects()//useStore(useSubjectsStore, (state) => state.subjects)
+    
     if (!solicitud) {
         return <div>Loading...</div>;
     }
-    console.log(solicitud)
     return (
         <React.Fragment>
             <Card className="shadow-lg relative overflow-hidden">
@@ -51,14 +60,14 @@ export default function DetalleSolicitudCard({solicitud, tipo}:Props)
                     <CardContent className="space-y-2 relative">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm md:text-base">
                             {detalleSolicitud('Estado', solicitud.estado)}
-                            {detalleSolicitud('Tipo de Solicitud', solicitud.tipo_solicitud)}
+                            {detalleSolicitud('Tipo de Solicitud', tiposSolicitud?.filter((cer)=> cer.id === Number(solicitud.tipo_solicitud))[0]?.solicitud)}
                             {detalleSolicitud('Apellidos', solicitud.apellidos)}
                             {detalleSolicitud('Nombres', solicitud.nombres)}
                             {detalleSolicitud('Celular', solicitud.celular)}
                             {detalleSolicitud('Tipo de Documento', solicitud.tipo_documento)}
                             {detalleSolicitud('Documento', solicitud.dni)}
-                            {detalleSolicitud('Facultad', solicitud.facultad)}
-                            {detalleSolicitud('Escuela', solicitud.escuela)}
+                            {detalleSolicitud('Facultad', facultades?.filter((cer)=> cer.id === Number(solicitud.facultad))[0]?.nombre ?? '')}
+                            {detalleSolicitud('Escuela', escuelas?.filter((cer)=> cer.id === Number(solicitud.escuela))[0]?.nombre ?? '')}
                             {detalleSolicitud('Código', solicitud.codigo)}
                             {detalleSolicitud('Email', solicitud.email)}
                             {detalleSolicitud('Dirección', solicitud.direccion)}
@@ -67,8 +76,8 @@ export default function DetalleSolicitudCard({solicitud, tipo}:Props)
                                     <React.Fragment>
                                         {detalleSolicitud('Certificado Digital', solicitud.digital ? 'Sí' : 'No')}
                                         {detalleSolicitud('Alumno antiguo', solicitud.antiguo ? 'Sí' : 'No')}
-                                        {detalleSolicitud('Idioma', solicitud.idioma)}
-                                        {detalleSolicitud('Nivel', solicitud.nivel)}
+                                        {detalleSolicitud('Idioma', idiomas?.filter((cer)=> cer.id === Number(solicitud.idioma))[0].nombre)}
+                                        {detalleSolicitud('Nivel', NIVEL.find((cer)=> cer.value === solicitud.nivel)?.label)}
                                         {solicitud.img_voucher && detalleSolicitud('Monto Pagado', `S/${solicitud.pago}`)}
                                         {solicitud.img_voucher && detalleSolicitud('Fecha de Pago', solicitud.fecha_pago)}
                                         {solicitud.img_voucher && detalleSolicitud('Número de Voucher', solicitud.numero_voucher)}

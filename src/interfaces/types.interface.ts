@@ -1,33 +1,30 @@
-export interface Itexto{
+export interface ITexto{
     id?:string,
-    titulo:string,
-    texto:string,
-    creado?:string,
-    modificado?:string
+    codigo:string,
+    contenido:string,
+    creadoEn?:Date,
+    modificadoEn?:Date
 }
-interface Ibase {
-    id?:string,
-    value:string,
-    label:string,
-    creado?:string,
-    modificado?:string
+export interface IBaseData{
+    id?: number,
+    isNew?:boolean
 }
-export type Ifacultad = Ibase
-export type Icurso = Ibase 
-export interface ITipoSolicitud extends Ibase{
-    precio: number
+export interface IIdioma extends IBaseData{
+    nombre:string
 }
-
-export interface Irow{
-    id:number,
-    ciclo:string,
-    mes:string,
-    anno:string,
-    profesor?:string
+export interface IFacultad extends IBaseData{
+    nombre:string,
+    codigo: string
 }
-export interface IformData{
-    ciclo:string,
-    mes:string,
-    anno:string,
-    profesor:string
+export interface ITipoSolicitud extends IBaseData{ 
+    solicitud:string, 
+    precio:number
 }
+export interface ISalon extends IBaseData{
+    capacidad: number
+}
+export interface IEscuela extends IBaseData{
+    nombre: string,
+    facultadId: number
+}
+  

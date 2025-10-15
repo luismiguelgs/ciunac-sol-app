@@ -17,6 +17,7 @@ export default function VerifySchedules()
 		try {
 			const data = await CronogramaExamService.getAll();
 			setCronogramas(data);
+            console.log(data)
 		} catch (error) {
 			console.error('Error fetching cronogramas:', error);
 		} finally {
@@ -29,7 +30,7 @@ export default function VerifySchedules()
     const verifySchedules = (cronogramas: IcronogramaExam[]) => {
 		for (let i = 0; i < cronogramas.length; i++) {
 		    const schedule = cronogramas[i];
-		    const active = schedule.active;
+		    const active = schedule.activo;
 		    if (active) {
 			    return true;
 		    }
@@ -47,7 +48,7 @@ export default function VerifySchedules()
 
         // Filtrar los elementos cuya fecha sea posterior a "pasado mañana"
         const filerItem = cronogramas.filter((item) => {
-            const itemDate = new Date(item.date);
+            const itemDate = new Date(item.fecha);
             itemDate.setHours(0, 0, 0, 0); // Eliminar la hora de la fecha del ítem
             return itemDate > dayAfterTomorrow; // Solo fechas posteriores a "pasado mañana"
         });
@@ -55,8 +56,8 @@ export default function VerifySchedules()
         // Ordenar por periodo (módulo)
 
         return filerItem.sort((a,b)=>{
-            const periodoA = parseInt(a.period);
-            const periodoB = parseInt(b.period);
+            const periodoA = parseInt(a.modulo.nombre);
+            const periodoB = parseInt(b.modulo.nombre);
             return periodoA - periodoB;
         });
     };
@@ -84,8 +85,8 @@ export default function VerifySchedules()
                 <MyTable 
                     data={schedulesLeft(cronogramas as IcronogramaExam[])} 
                     columns={[
-                        {header: "Módulo", accessor: "period"},
-                        {header:"Fecha", accessor: "date", render:(value)=>{
+                        {header: "Módulo", accessor: "modulo", render: (_v, row)=>row.modulo.nombre ?? ""},
+                        {header:"Fecha", accessor: "fecha", render:(value)=>{
                             const date = new Date(value as string);
                             return date.toLocaleDateString("es-PE");
                         }}]}

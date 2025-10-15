@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { IEscuela } from "@/interfaces/types.interface"
 import { Control } from "react-hook-form"
 
 type Props = {
@@ -25,10 +26,14 @@ type Props = {
     description?: string
     placeholder?: string
     disabled?: boolean
-    options?: { value: string; label: string }[] 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    options?: any[]
+    // Permite definir cómo obtener value/label según el tipo del item
+    getOptionValue?: (item: any) => string
+    getOptionLabel?: (item: any) => string
 }
 
-export function MySelect({name, label, control, options, placeholder,disabled, description}:Props) {
+export function MySelect({name, label, control, options, placeholder,disabled, description, getOptionValue, getOptionLabel}:Props) {
     return (
         <FormField
             control={control}
@@ -44,11 +49,15 @@ export function MySelect({name, label, control, options, placeholder,disabled, d
                         </FormControl>
                         <SelectContent className="w-full min-w-[300px]">
                             {
-                                options?.map((item, index) => (
-                                    <SelectItem key={index} value={item.value} className="py-2">
-                                        {item.label}
-                                    </SelectItem>
-                                ))
+                                options?.map((item, index) => {
+                                    const value = getOptionValue ? getOptionValue(item) : (item?.value ?? item?.id ?? String(index))
+                                    const label = getOptionLabel ? getOptionLabel(item) : (item?.label ?? item?.nombre ?? String(item))
+                                    return (
+                                        <SelectItem key={index} value={value} className="py-2">
+                                            {label}
+                                        </SelectItem>
+                                    )
+                                })
                             }
                         </SelectContent>
                     </Select>

@@ -13,17 +13,17 @@ export default function Disclamer()
             <div className="grid grid-cols-1 gap-1">
                 <MyAlert
                     title='Atención'
-                    description={textos?.find(objeto=> objeto.titulo === 'texto_1_final')?.texto}
+                    description={textos?.find(objeto=> objeto.codigo === 'TEXTO_1_FINAL')?.contenido}
                     type='info'
                 />
                 <MyAlert
                     title='Importante'
-                    description={textos?.find(objeto=> objeto.titulo === 'texto_1_disclamer')?.texto}
+                    description={textos?.find(objeto=> objeto.codigo === 'TEXTO_1_DISCLAMER')?.contenido}
                     type='warning'
                 />
                 <MyAlert
                     title='Importante'
-                    description={textos?.find(objeto=> objeto.titulo === 'texto_2_disclamer')?.texto}
+                    description={textos?.find(objeto=> objeto.codigo === 'TEXTO_2_DISCLAMER')?.contenido}
                     type='warning'
                 />
             </div>

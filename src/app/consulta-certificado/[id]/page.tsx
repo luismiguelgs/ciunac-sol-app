@@ -8,17 +8,17 @@ import waterMark from '@/assets/logo-ciunac-trans.png'
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertTriangle } from "lucide-react"
 import { Mail, Phone } from "lucide-react"
+import { ICertificado, ICertificadoNota } from "@/modules/consulta-certificado/interfaces/certificado.interface";
 
-async function getCertificate(id:string) {
+async function getCertificate(id:string): Promise<ICertificado | undefined> {
     const resData = await CertificadosService.selectItem(id)
     return resData
 }
 
-async function getCertificateDetail(id:string) {
-    const resDetail = await CertificadosService.fetchItemsDetail(id)
-    const sortedData = resDetail.sort((a: { curso: string }, b: { curso: string }) => {
-		const aNumber = parseInt(a.curso.match(/\d+$/)?.[0] || '0');
-  		const bNumber = parseInt(b.curso.match(/\d+$/)?.[0] || '0');
+async function getCertificateDetail(notas:ICertificadoNota[]) {
+    const sortedData = notas.sort((a: { ciclo: string }, b: { ciclo: string }) => {
+		const aNumber = parseInt(a.ciclo.match(/\d+$/)?.[0] || '0');
+  		const bNumber = parseInt(b.ciclo.match(/\d+$/)?.[0] || '0');
 		return aNumber - bNumber;
 	});
     return sortedData
@@ -32,7 +32,7 @@ type PageProps = {
 export default async function GetCertificatePage({params}:PageProps) {
     const {id} = await params
     const certificado = await getCertificate(id)
-    const certificadoDetail = await getCertificateDetail(id)
+    const certificadoNotas = await getCertificateDetail(certificado?.notas ?? [])
 
     return (
         <main className="min-h-screen flex flex-col">
@@ -57,7 +57,7 @@ export default async function GetCertificatePage({params}:PageProps) {
                         </div>
                         <CardHeader>
                             <h2 className="text-2xl font-bold text-center md:text-left relative">
-                                {certificado?.alumno}
+                                {certificado?.estudiante}
                             </h2>
                             <Separator className="my-4" />
                         </CardHeader>
@@ -65,24 +65,40 @@ export default async function GetCertificatePage({params}:PageProps) {
                             <div className="grid grid-cols-1 gap-3 text-sm md:text-base">
                                 <div className="flex justify-between items-center">
                                     <span className="font-semibold">Idioma:</span>
-                                    <span>{certificadoDetail[0].curso.split(" ")[0]}</span>
+                                    <span>{certificadoNotas[0].ciclo.split(" ")[0]}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="font-semibold">Nivel:</span>
+                                    <span>{certificado?.nivel}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
                                     <span className="font-semibold">N°Horas:</span>
-                                    <span>{certificado?.horas}</span>
+                                    <span>{certificado?.cantidadHoras}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
                                     <span className="font-semibold">N°Registro:</span>
-                                    <span>{certificado?.numero_registro}</span>
+                                    <span>{certificado?.numeroRegistro}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
                                     <span className="font-semibold">Fecha de Emisión:</span>
-                                    <span>{new Date(certificado?.fecha_emision ?? '').toLocaleDateString()}</span>
+                                    <span>{new Date(certificado?.fechaEmision ?? '').toLocaleDateString()}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
                                     <span className="font-semibold">Fecha de Conclusión:</span>
-                                    <span>{new Date(certificado?.fecha_conclusion ?? '').toLocaleDateString()}</span>
+                                    <span>{new Date(certificado?.fechaConcluido ?? '').toLocaleDateString()}</span>
                                 </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="font-semibold">Entregado:</span>
+                                    <span>{certificado?.aceptado ? 'Sí' : 'No'}</span>
+                                </div>
+                                {
+                                    certificado?.aceptado && (
+                                        <div className="flex justify-between items-center">
+                                            <span className="font-semibold">Fecha de Entrega:</span>
+                                            <span>{new Date(certificado?.fechaAceptacion ?? '').toLocaleDateString()}</span>
+                                        </div>
+                                    )
+                                }
                             </div>
                         </CardContent>
                     </Card>
@@ -91,7 +107,7 @@ export default async function GetCertificatePage({params}:PageProps) {
                     <Card className="shadow-lg">
                         <CardHeader>
                             <h2 className="text-2xl font-bold text-center md:text-left">
-                                NIVEL {certificadoDetail[0].curso.split(" ")[1]}
+                                NIVEL {certificadoNotas[0].ciclo.split(" ")[1]}
                             </h2>
                             <Separator className="my-4" />
                         </CardHeader>
@@ -106,9 +122,9 @@ export default async function GetCertificatePage({params}:PageProps) {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {certificadoDetail.map((item, index) => (
+                                        {certificadoNotas.map((item, index) => (
                                             <TableRow key={index} className={index % 2 === 0 ? 'bg-muted/50' : ''}>
-                                                <TableCell className="font-medium">{item.curso}</TableCell>
+                                                <TableCell className="font-medium">{item.ciclo}</TableCell>
                                                 <TableCell>{`${item.ciclo} ${item.modalidad}`}</TableCell>
                                                 <TableCell>{item.nota}</TableCell>
                                             </TableRow>

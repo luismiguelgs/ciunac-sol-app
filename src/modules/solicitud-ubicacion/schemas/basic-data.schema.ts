@@ -6,13 +6,13 @@ const msg = {
 }
 
 export const basicInfoSchema = z.object({
-    tipo_solicitud: z.string().min(2,msg.required).trim(),
+    tipo_solicitud: z.string().min(1,msg.required).trim(),
     apellidos: z.string().min(2,msg.required).trim(),
     nombres: z.string().min(2,msg.required).trim(),
-    idioma: z.string().min(2,msg.required).trim(),
+    idioma: z.string().min(1,msg.required).trim(),
     img_dni: z.string().min(2,msg.required).trim(),
-    nivel : z.string().min(2,msg.required).trim(),
-    tipo_documento: z.enum(["PE01","PE02","PE03"]),
+    nivel : z.string().min(1,msg.required).trim(),
+    tipo_documento: z.enum(["DNI","CE","PASAPORTE"]),
     celular: z.string().min(9,msg.required).max(9, msg.invalid(9)).trim(),
     dni: z.string().min(8,msg.required).trim(),
     //opcionales
@@ -20,9 +20,10 @@ export const basicInfoSchema = z.object({
     facultad: z.string().trim(),
     escuela: z.string().trim(),
     codigo: z.string().trim(),
+    estudianteId: z.string().optional(),
    
 }).superRefine((data, ctx) => {
-    const reqLength = data.tipo_documento === "PE01" ? 8 : 9;
+    const reqLength = data.tipo_documento === "DNI" ? 8 : 9;
     if(data.dni.length !== reqLength) ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: msg.invalid(reqLength),
@@ -58,9 +59,9 @@ export const basicInfoSchema = z.object({
 export type IBasicInfoSchema = z.infer<typeof basicInfoSchema>;
 
 export const initialValues:IBasicInfoSchema = {
-    tipo_solicitud: "EXAMEN_DE_UBICACION",
+    tipo_solicitud: "7",
     idioma: "",
-    nivel: "BASICO",
+    nivel: "1",
     apellidos: "",
     nombres: "",
     facultad: "",
@@ -68,7 +69,8 @@ export const initialValues:IBasicInfoSchema = {
     estudiante: false,
     escuela: "",
     codigo: "",
-    tipo_documento: "PE01",
+    tipo_documento: "DNI",
     dni: "",
     celular: "",
+    estudianteId: "",
 }

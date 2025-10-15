@@ -90,7 +90,7 @@ export default function FinData({activeStep,setActiveStep,steps,handleNext, prec
 					<div>
 						<MyAlert
 							title='Atención'
-							description={textos?.find((objeto) => objeto.titulo === 'texto_1_pago')?.texto}
+							description={textos?.find((objeto) => objeto.codigo === 'TEXTO_1_PAGO')?.contenido}
 						/>
 					</div>
 					<div className="space-y-4">

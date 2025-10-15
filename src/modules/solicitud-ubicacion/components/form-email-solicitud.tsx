@@ -7,8 +7,7 @@ import { IVerificationSchema } from '@/schemas/verification.schema';
 import DialogInfoAdicional from './dialog-info';
 import useStore from '@/hooks/useStore';
 import { useTextsStore } from '@/stores/types.stores';
-import TypesService from '@/services/types.service';
-import { Itexto } from '@/interfaces/types.interface';
+import TextosService from '@/services/text.service';
 
 export default function FormEmailSolicitud()
 {
@@ -17,7 +16,7 @@ export default function FormEmailSolicitud()
 
     React.useEffect(()=>{
         const texts = async () => {
-            textos = await TypesService.fetchTypes<Itexto>('textos');
+            textos = await TextosService.fetchItems();
             useTextsStore.setState({ textos: textos })
         }
         if(!textos) texts()

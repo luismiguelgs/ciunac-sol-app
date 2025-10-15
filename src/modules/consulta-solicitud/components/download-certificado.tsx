@@ -1,5 +1,4 @@
 'use client'
-import Isolicitud from "@/interfaces/solicitud.interface"
 import React from "react"
 import { Icertificado } from "../interfaces/certificado.interface"
 import CertificadosService from "../services/certificados.service"
@@ -9,7 +8,7 @@ import pdfImage from '@/assets/pdf.png'
 import { Download } from "lucide-react"
 
 
-export default function DownloadCertificado({item}:{item:Isolicitud}) {
+export default function DownloadCertificado({item}:{item:any}) {
     const [certificado, setCertificado] = React.useState<Icertificado | null>(null)
 
     React.useEffect(() => {

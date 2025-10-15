@@ -2,28 +2,28 @@
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import pdfImage from '@/assets/pdf.png'
-import Isolicitud from '@/interfaces/solicitud.interface'
+import { ISolicitudRes } from '@/interfaces/solicitud.interface'
 import CargoPdf from '@/modules/consulta-solicitud/components/cargo-pdf'
 import { pdf } from '@react-pdf/renderer'
-import { Itexto } from '@/interfaces/types.interface'
+import { ITexto } from '@/interfaces/types.interface'
 
 type Props = {
-    item: Isolicitud
-    textos: Itexto[]
+    item: ISolicitudRes
+    textos: ITexto[]
 }
 
 export default function DownloadCargo({item, textos}: Props) {
     const descargarPDF = async() => {
         const obj = {
-            solicitud: item.tipo_solicitud || 'SOLICITUD DE CERTIFICADO',
-            creado: new Date(item.creado as string).toLocaleDateString(),
-            apellidos: item.apellidos,
-            nombres: item.nombres,
-            dni: item.dni,
-            idioma: item.idioma,
-            nivel: item.nivel,
+            solicitud: item.tiposSolicitud?.solicitud || 'SOLICITUD DE CERTIFICADO',
+            creado: new Date(item.creadoEn as string).toLocaleDateString(),
+            apellidos: item.estudiante?.apellidos,
+            nombres: item.estudiante?.nombres,
+            dni: item.estudiante?.numeroDocumento,
+            idioma: item.idioma?.nombre,
+            nivel: item.nivel?.nombre,
             pago: item.pago,
-            voucher: item.numero_voucher
+            voucher: item.numeroVoucher
         }
 
         const cargoPdfElement = <CargoPdf textos={textos} obj={obj}/>
@@ -33,7 +33,7 @@ export default function DownloadCargo({item, textos}: Props) {
         const a = document.createElement('a')
         a.style.display = 'none'
         a.href = blobUrl
-        a.download = `${item.dni}-${item.idioma}-${item.nivel}.pdf`
+        a.download = `${item.estudiante?.numeroDocumento}-${item.idioma?.nombre}-${item.nivel?.nombre}.pdf`
 
         document.body.appendChild(a)
         a.click()
@@ -47,7 +47,7 @@ export default function DownloadCargo({item, textos}: Props) {
             <div className="flex items-center gap-1">
                 <Image
                     src={pdfImage}
-                    alt={item.id as string}
+                    alt={String(item.id)}
                     width={50}
                     height={50}
                     className="cursor-pointer hover:opacity-80 transition-opacity"
@@ -58,7 +58,7 @@ export default function DownloadCargo({item, textos}: Props) {
                     className="text-base"
                     onClick={descargarPDF}
                 >
-                    {`${item.dni}-${item.idioma}-${item.nivel}.PDF`}
+                    {`${item.estudiante?.numeroDocumento}-${item.idioma?.nombre}-${item.nivel?.nombre}.PDF`}
                 </Button>
             </div>
             <p className="text-sm font-medium text-destructive pl-2">

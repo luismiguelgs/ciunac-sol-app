@@ -1,10 +1,29 @@
-import { Itexto, Ifacultad, Icurso, ITipoSolicitud } from "@/interfaces/types.interface";
+import { ITexto, IFacultad, IIdioma, IEscuela, ITipoSolicitud } from "@/interfaces/types.interface";
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 
+interface EscuelasState {
+    escuelas: IEscuela[]
+    setEscuelas: (docs:IEscuela[]) => void
+}
+
+export const useEscuelasStore = create<EscuelasState>()(
+    persist(
+      (set) => ({
+        escuelas: [],
+        setEscuelas: (escuelas) => set({ escuelas: escuelas }),//set({ bears: get().bears + 1 }),
+      }),
+      {
+        name: 'escuelas-storage', // name of item in the storage (must be unique)
+        storage: createJSONStorage(() => sessionStorage), // (optional) by default the 'localStorage' is used
+        partialize: (state) => ({ documents: state.escuelas }),
+      },
+    ),
+)
+
 interface TextsState {
-		textos: Itexto[]
-		setTextos: (textos:Itexto[]) => void
+		textos: ITexto[]
+		setTextos: (textos:ITexto[]) => void
 }
 	
 export const useTextsStore = create<TextsState>()(
@@ -42,8 +61,8 @@ export const useDocumentsStore = create<DocsState>()(
 )
 
 interface FacusState {
-    faculties: Ifacultad[]
-    setFaculties: (docs:Ifacultad[]) => void
+    faculties: IFacultad[]
+    setFaculties: (docs:IFacultad[]) => void
 }
   
 export const useFacultiesStore = create<FacusState>()(
@@ -60,8 +79,8 @@ export const useFacultiesStore = create<FacusState>()(
     ),
 )
 interface SubjectsState {
-    subjects: Icurso[]
-    setSubjects: (subs:Icurso[]) => void
+    subjects: IIdioma[]
+    setSubjects: (subs:IIdioma[]) => void
 }
   
 export const useSubjectsStore = create<SubjectsState>()(
@@ -71,7 +90,7 @@ export const useSubjectsStore = create<SubjectsState>()(
         setSubjects: (subs) => set({ subjects: subs }),
       }),
       {
-        name: 'faculties-storage', // name of item in the storage (must be unique)
+        name: 'idiomas-storage', // name of item in the storage (must be unique)
         storage: createJSONStorage(() => sessionStorage), // (optional) by default the 'localStorage' is used
         partialize: (state) => ({ documents: state.subjects }),
       },

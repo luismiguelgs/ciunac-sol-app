@@ -1,7 +1,8 @@
 import { Document, Page, StyleSheet, Image, Text } from "@react-pdf/renderer"
 import logoCiunac from '@/assets/logo-ciunac.jpg'
 import React from "react"
-import { Itexto } from "@/interfaces/types.interface"
+import { ITexto } from "@/interfaces/types.interface"
+import { ISolicitudRes } from "@/interfaces/solicitud.interface"
 
 const styles = StyleSheet.create({
     page:{
@@ -33,9 +34,9 @@ const styles = StyleSheet.create({
 })
 
 type Props = {
-    textos: Itexto[],
+    textos: ITexto[],
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    obj: any
+    obj: ISolicitudRes
 }
 const CargoPdf:React.FC<Props> = ({textos,obj}) => (
     <Document>
@@ -44,27 +45,27 @@ const CargoPdf:React.FC<Props> = ({textos,obj}) => (
                 <Text style={styles.title}>CARGO PARA EXAMEN DE UBICACIÓN</Text>
                 <Text style={styles.text}>SE HA COMPLETADO EL PROCEDIMIENTO!</Text>
                 <Text style={styles.text}>
-                    {message('texto_ubicacion_3',textos)}
+                    {message('TEXTO_UBICACION_3',textos)}
                 </Text>
-                <Text style={styles.data}>{`Tipo de Documento: ${obj.solicitud.toLocaleUpperCase()}`}</Text>
-                <Text style={styles.data}>{`Fecha de Ingreso: ${obj.creado}`}</Text>
-                <Text style={styles.data}>{`Apellidos: ${obj.apellidos.toLocaleUpperCase()}`}</Text>
-                <Text style={styles.data}>{`Nombres: ${obj.nombres.toLocaleUpperCase()}`}</Text>
-                <Text style={styles.data}>{`DNI: ${obj.dni.toLocaleUpperCase()}`}</Text>
-                <Text style={styles.data}>{`Idioma: ${obj.idioma.toLocaleUpperCase()}`}</Text>
-                <Text style={styles.data}>{`Nivel: ${obj.nivel.toLocaleUpperCase()}`}</Text>
+                <Text style={styles.data}>{`Tipo de Documento: ${obj.tiposSolicitud?.solicitud.toLocaleUpperCase()}`}</Text>
+                <Text style={styles.data}>{`Fecha de Ingreso: ${obj.creadoEn}`}</Text>
+                <Text style={styles.data}>{`Apellidos: ${obj.estudiante?.apellidos.toLocaleUpperCase()}`}</Text>
+                <Text style={styles.data}>{`Nombres: ${obj.estudiante?.nombres.toLocaleUpperCase()}`}</Text>
+                <Text style={styles.data}>{`DNI: ${obj.estudiante?.numeroDocumento.toLocaleUpperCase()}`}</Text>
+                <Text style={styles.data}>{`Idioma: ${obj.idioma?.nombre.toLocaleUpperCase()}`}</Text>
+                <Text style={styles.data}>{`Nivel: ${obj.nivel?.nombre.toLocaleUpperCase()}`}</Text>
                 <Text style={styles.data}>{`Pago: S/${obj.pago}`}</Text>
-                <Text style={styles.data}>{`Número de Voucher: ${obj.numero_voucher}`}</Text>
+                <Text style={styles.data}>{`Número de Voucher: ${obj.numeroVoucher}`}</Text>
                 <Text style={styles.text}>
-                    {message('texto_ubicacion_4',textos)}
+                    {message('TEXTO_UBICACION_4',textos)}
                 </Text>
             </Page>
     </Document>
 )
 
-function message(text:string, textos:Itexto[]):string{
-    const objEncontrado = textos.find(objeto=> objeto.titulo === text)
-    return objEncontrado ? objEncontrado.texto : '';
+function message(text:string, textos:ITexto[]):string{
+    const objEncontrado = textos.find(objeto=> objeto.codigo === text)
+    return objEncontrado ? objEncontrado.contenido : '';
 }
 
 export default CargoPdf
