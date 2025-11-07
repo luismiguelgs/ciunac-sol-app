@@ -1,26 +1,15 @@
-import { firestore } from '@/lib/firebase';
-import { collection, query, where, getDocs } from 'firebase/firestore'
-import { Iexamen, IexamenNotas } from '../interfaces/examen.interface';
+import { apiFetch } from "@/lib/api.service";
+import { IExamenUbicacion, IDetalleExamenUbicacion } from "../interfaces/examen.interface";
 
 export default class SolicitudesExamenService
 {
-    private static db_examenes = collection(firestore, 'examenes')
-    private static db_notas = collection(firestore, 'notas_ubicacion')
+    private static dbExamenesUbicacion = 'examenesubicacion'
+    private static dbDetalleExamenesUbicacion = 'detallesubicacion'
 
     //Examenes - funciones ****************************************
-    public static async fetchItems():Promise<Iexamen[]>{
+    public static async fetchItems():Promise<IExamenUbicacion[]>{
         try{
-            const snapShot = await getDocs(this.db_examenes)
-            const data = snapShot.docs.map((item)=>{
-                return{
-                    ...item.data(),
-                    id: item.id,
-                    fecha_examen: item.data().fecha_examen ? new Date(item.data().fecha_examen.seconds * 1000) : null,
-                    fecha_final: item.data().fecha_final ? new Date(item.data().fecha_final.seconds * 1000) : null,
-                    creado: item.data().creado ? new Date(item.data().creado.seconds * 1000) : null,
-                    modificado: item.data().modificado ? new Date(item.data().modificado.seconds * 1000) : null,
-                } as Iexamen
-            })
+            const data = await apiFetch<IExamenUbicacion[]>(this.dbExamenesUbicacion, 'GET')
             return data
         }
         catch(err){
@@ -33,19 +22,11 @@ export default class SolicitudesExamenService
         }
     }
     //Calificaciones Detalle - funciones ************************
-    public static async fetchItemsDetail(dni: string):Promise<IexamenNotas[]>
+    public static async fetchItemsDetail(dni: string):Promise<IDetalleExamenUbicacion[]>
     {
         console.info('fetchItemsDetail', dni)
         try{
-            const q = query(this.db_notas,where('dni','==',dni))
-            const snapShot = await getDocs(q)
-            
-            const data = snapShot.docs.map((item)=>{
-                return{
-                    ...item.data(),
-                    id: item.id,
-                } as IexamenNotas
-            })
+            const data = await apiFetch<IDetalleExamenUbicacion[]>(`${this.dbDetalleExamenesUbicacion}/estudiante/documento/${dni}`, 'GET')
             return data
         }
         catch(err){

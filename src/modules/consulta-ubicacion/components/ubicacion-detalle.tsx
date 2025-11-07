@@ -1,15 +1,18 @@
 'use client'
 import React from 'react'
-import { Iexamen, IexamenNotas } from '../interfaces/examen.interface'
+import { IExamenUbicacion, IDetalleExamenUbicacion } from '../interfaces/examen.interface'
 import SolicitudesExamenService from '../services/solicitud-examen.service'
 import Download from './download'
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
+import useCiclos from '../hooks/useCiclos'
 
 export default function UbicacionDetalle({dni}:{dni:string}) {
-    const [notas, setNotas] = React.useState<IexamenNotas[]>([])
+
+    const {data:ciclos} = useCiclos()
+    const [notas, setNotas] = React.useState<IDetalleExamenUbicacion[]>([])
     const [loading, setLoading] = React.useState(true)
-    const [examenes, setExamenes] = React.useState<Iexamen[]>([])
+    const [examenes, setExamenes] = React.useState<IExamenUbicacion[]>([])
 
     React.useEffect(() => {
         const fetchNotas = async () => {
@@ -47,9 +50,9 @@ export default function UbicacionDetalle({dni}:{dni:string}) {
                 <React.Fragment key={nota.id}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
                         <div>
-                            <h3 className="font-medium">{nota.idioma}</h3>
+                            <h3 className="font-medium">{nota.idioma?.nombre}</h3>
                             <p className="text-sm text-muted-foreground">
-                                Fecha: {examenes.find((examen) => examen.id === nota.examen_id)?.fecha_examen.toLocaleDateString()}
+                                Fecha: {fechaFormateada(examenes.find((examen) => examen.id === nota.examenId)?.fecha)}
                             </p>
                         </div>
                         <div>
@@ -59,15 +62,14 @@ export default function UbicacionDetalle({dni}:{dni:string}) {
                         </div>
                         <div>
                             <p className="text-sm">
-                                Ubicación: <span className="font-bold">{nota.ubicacion}</span>
+                                Ubicación: <span className="font-bold">{ciclos.find((ciclo) => ciclo.id === nota.calificacion?.cicloId)?.nombre}</span>
                             </p>
                         </div>
                         <div>
                             <Download 
                                 item={nota} 
-                                fecha={examenes.find((examen) => 
-                                    examen.id === nota.examen_id)?.fecha_examen.toLocaleDateString()
-                                } 
+                                fecha={fechaFormateada(examenes.find((examen) => examen.id === nota.examenId)?.fecha)}
+                                ciclo={ciclos.find((ciclo) => ciclo.id === nota.calificacion?.cicloId)?.nombre || ""}
                             />
                         </div>
                     </div>
@@ -76,6 +78,12 @@ export default function UbicacionDetalle({dni}:{dni:string}) {
             ))}
         </div>
     )
+}
+
+function fechaFormateada(fecha: string | number | Date | undefined) {
+    if (!fecha) return ''
+    const d = new Date(fecha)
+    return isNaN(d.getTime()) ? '' : d.toLocaleDateString('es-PE', { day: 'numeric', month: 'numeric', year: 'numeric' })
 }
 
 function Loading() {

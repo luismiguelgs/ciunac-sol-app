@@ -1,38 +1,64 @@
-export interface Iexamen{
-    id?:string,
-    salon: string,
+export interface IExamenUbicacion{
+    id?:number,
     codigo: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fecha_examen: any,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fecha_final: any,
-    idioma: string,
-    nivel: string,
-    profesor_id: string,
-    profesor?: string,
-    estado: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    hora_inicial?: any,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    hora_final?: any,
-    calificacion_id: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    creado?: any,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    modificado?: any
+    fecha: Date | string,
+    estadoId: number,
+    idiomaId: number,
+    docenteId: string,
+    aulaId: number,
+    creadoEn?:Date,
+    modificadoEn?:Date,
+    estado?:{
+        id:number,
+        nombre:string,
+    },
+    idioma?:{
+        id:number,
+        nombre:string,
+    },
+    nivel?:{
+        id:number,
+        nombre:string,
+    },
+    docente?:{
+        id:string,
+        nombres:string,
+        apellidos:string,
+    }
+    aula?:{
+        id:number,
+        nombre: string
+    }
 }
-export interface IexamenNotas{
-    id?: string,
-    examen_id: string,
-    solicitud_id:string,
-    idioma: string,
-    nivel: string,
-    apellidos: string,
-    nombres: string,
-    dni: string,
-    numero_voucher: string,
-    monto: number,
+export interface IDetalleExamenUbicacion{
+    id?: number,
+    examenId: number,
+    solicitudId: number,
+    idiomaId: number,
+    nivelId: number,
+    estudianteId: string,
     nota: number,
-    ubicacion: string,
+    calificacionId: number,
     terminado: boolean,
+    creadoEn?: Date,
+    modificadoEn?: Date,
+    estudiante?:{
+        id:string,
+        nombres:string,
+        apellidos:string,
+        numeroDocumento: string
+    }
+    idioma?:{
+        id:number,
+        nombre:string, 
+    }
+    nivel?:{
+        id:number,
+        nombre:string,
+    }
+    calificacion?:{
+        id:number,
+        cicloId:number
+    }
+    activo?: boolean
 }

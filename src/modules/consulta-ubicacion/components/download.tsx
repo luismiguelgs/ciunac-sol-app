@@ -2,26 +2,27 @@
 import { Button } from "@/components/ui/button"
 import { FileDown } from "lucide-react"
 import { pdf } from '@react-pdf/renderer'
-import { IexamenNotas } from '../interfaces/examen.interface'
+import { IDetalleExamenUbicacion } from '../interfaces/examen.interface'
 import ConstanciaFormat from '../components/ConstanciaFormat'
 import Image from "next/image"
 import pdfImage from '@/assets/pdf.png'
 
 type Props = {
-    item: IexamenNotas
-    fecha: string
+    item: IDetalleExamenUbicacion
+    fecha: string,
+    ciclo: string
 }
 
-export default function Download({item, fecha}: Props) {
+export default function Download({item, fecha, ciclo}: Props) {
     const descargarPDF = async() => {
-        const cargoPdfElement = <ConstanciaFormat data={item} fecha={fecha}/>
+        const cargoPdfElement = <ConstanciaFormat data={item} fecha={fecha} ciclo={ciclo}/>
         const blobPdf = await pdf(cargoPdfElement).toBlob()
         const blobUrl = URL.createObjectURL(blobPdf)
         
         const a = document.createElement('a')
         a.style.display = 'none'
         a.href = blobUrl
-        a.download = `${item.dni}-${item.idioma}-${item.nivel}.pdf`
+        a.download = `${item.estudiante?.numeroDocumento}-${item.idioma?.nombre}-${item.nivel?.nombre}.pdf`
 
         document.body.appendChild(a)
         a.click()

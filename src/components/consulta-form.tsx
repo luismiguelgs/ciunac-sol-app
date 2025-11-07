@@ -12,7 +12,7 @@ import { useMask } from '@react-input/mask';
 import { MyAlertDialog } from "@/components/dialogs/alert-dialog"
 import SolicitudesService from "@/services/solicitudes.service"
 import { useRouter } from "next/navigation"
-import Isolicitud from "@/interfaces/solicitud.interface"
+import { ISolicitudRes } from "@/interfaces/solicitud.interface"
 
 const msg = {
 	required: "El número de documento es requerido",
@@ -125,7 +125,7 @@ export default function ConsultaForm({solicitud}: Props)
 	)
 
 	async function buscarSolicitud(documento: string) {
-		const result = await SolicitudesService.searchItemByDni(documento) as Isolicitud[];
+		const result = await SolicitudesService.searchItemByDni(documento) as ISolicitudRes[];
 		if(result.length > 0){   
 			router.push(`./consulta-solicitud/${documento}`)
 		}else{
@@ -135,20 +135,20 @@ export default function ConsultaForm({solicitud}: Props)
 		}
 	}
 	async function buscarExamenUbicacion(documento: string) {
-		const result = await SolicitudesService.searchItemByDni(documento) as Isolicitud[];
+		const result = await SolicitudesService.searchItemByDni(documento) as ISolicitudRes[];
 		if(result.length > 0){   
 			const item = result[0]
             const queryParams = new URLSearchParams(
-            Object.entries({apellidos: item.apellidos.trim(), nombres: item.nombres.trim()}).reduce((acc, [key, value]) => {
+            Object.entries({apellidos: item.estudiante?.apellidos.trim(), nombres: item.estudiante?.nombres.trim()}).reduce((acc, [key, value]) => {
                 	acc[key] = String(value);
                 	return acc;
             	}, {} as Record<string, string>)
             ).toString(); 
             router.push(`./consulta-ubicacion/${documento}?${queryParams}`);
-			}else{
-				setOpen(true)
-				setDialog(alert.notFound)
-				setLoading(false)
-			}
+		}else{
+			setOpen(true)
+			setDialog(alert.notFound)
+			setLoading(false)
+		}
 	}
 }

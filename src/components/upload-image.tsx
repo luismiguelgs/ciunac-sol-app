@@ -13,11 +13,26 @@ type Props = {
     field: string;
     label: string;
     dni: string;
-    folder: string;
+    folder: 'dnis' | 'vouchers' | 'becas';
 }
 
 export default function UploadImage({form,field, label, dni, folder}:Props) 
 {
+    const toDrivePreview = (url?: string) => {
+        if (!url) return url
+        try{
+            const u = new URL(url)
+            if (u.hostname === 'drive.google.com'){
+                // Patterns: /file/d/{id}/view or open?id={id}
+                const match = u.pathname.match(/\/d\/([^/]+)\//)
+                const id = match?.[1] || u.searchParams.get('id')
+                if (id) return `https://drive.google.com/uc?export=view&id=${id}`
+            }
+        }catch{
+            // ignore
+        }
+        return url
+    }
     return (
         <div>
 			<Card className='mb-2'>
@@ -26,7 +41,7 @@ export default function UploadImage({form,field, label, dni, folder}:Props)
 					form.watch(field) ? (
 						<React.Fragment>
 							{
-                                isPdf(form.watch(field) as string) ? (
+                                isPdf(form.watch(field)) ? (
 								    <Image
 									    src={'/images/pdf.png'}
 									    width={250}
@@ -36,7 +51,7 @@ export default function UploadImage({form,field, label, dni, folder}:Props)
 								    />
 							    ):(
 									<Image
-										src={form.watch(field) ?? '/images/upload.svg'}
+										src={toDrivePreview(form.watch(field)) ?? '/images/upload.svg'}
 										width={250}
 										height={250}
 										alt={label}

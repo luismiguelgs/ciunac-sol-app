@@ -225,7 +225,7 @@ export default function BasicData({activeStep, setActiveStep, steps, handleNext}
                             field="img_dni"
                             label="Foto de DNI"
                             dni={form.watch('dni')}
-                            folder="dni"
+                            folder="dnis"
                         />
                     </div>                
                 </div>

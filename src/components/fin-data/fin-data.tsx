@@ -142,7 +142,7 @@ export default function FinData({activeStep,setActiveStep,steps,handleNext, prec
                             field="img_voucher"
                             label="Voucher de pago"
                             dni={solicitud.dni as string}
-                            folder="voucher"
+                            folder="vouchers"
                         />
 					</div>
 					

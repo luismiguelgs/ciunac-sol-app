@@ -64,7 +64,7 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                 Consulta del Estado de su Solicitud
                             </h1>
                             <h2 className="text-2xl font-bold text-center md:text-left">
-                                {`${requests[0].estudiante.apellidos} ${requests[0].estudiante.nombres}`}
+                                {`${requests[0].estudiante?.apellidos} ${requests[0].estudiante?.nombres}`}
                             </h2>
                             <p className="text-muted-foreground text-center md:text-left">DNI/CE/PASAPORTE: {dni}</p>
                             {textos && (
@@ -93,9 +93,9 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                     <CardHeader className="flex flex-row items-center gap-4">
                                         <Avatar>
                                             <AvatarFallback>
-                                                {item.estado.nombre === 'NUEVO' ? (
+                                                {item.estado?.nombre === 'NUEVO' ? (
                                                     <HourglassIcon className="h-4 w-4 text-blue-500" />
-                                                ) : item.estado.nombre === 'ELABORADO' ? (
+                                                ) : item.estado?.nombre === 'ELABORADO' ? (
                                                     <CheckCircleIcon className="h-4 w-4 text-green-500" />
                                                 ) : (
                                                     <ThumbsUpIcon className="h-4 w-4" />
@@ -103,7 +103,7 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                             </AvatarFallback>
                                         </Avatar>
                                         <div className="flex flex-col w-full gap-1">
-                                            <p className="text-sm font-medium">{item.tiposSolicitud.solicitud}</p>
+                                            <p className="text-sm font-medium">{item.tiposSolicitud?.solicitud}</p>
                                             <div className="flex items-center justify-between">
                                                 <p className="text-base text-muted-foreground">
                                                     {item.creadoEn? new Date(item.creadoEn as string).toLocaleDateString('es-ES'): ''}
@@ -115,7 +115,7 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                             </div>
                                         </div>
                                     </CardHeader>
-                                    {item.estado.nombre === 'NUEVO' ? (
+                                    {item.estado?.nombre === 'NUEVO' ? (
                                         <div className="relative h-[300px] w-full">
                                             <Image
                                                 src={procesoUno}
@@ -125,7 +125,7 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                                 className="object-contain"
                                             />
                                         </div>
-                                    ) : item.estado.nombre === 'ELABORADO' ? (
+                                    ) : item.estado?.nombre === 'ELABORADO' ? (
                                         <div className="relative h-[300px] w-full">
                                             <Image
                                                 src={procesoDos}
@@ -148,8 +148,8 @@ export default async function ResultadoSolicitudPage({ params }: PageProps) {
                                     )}
                                     <CardContent>
                                         {
-                                            textos && item.digital && item.estado.nombre === 'ENTREGADO' ? 
-                                            <DownloadCertificado item={item} /> : 
+                                            textos && item.digital && item.estadoId === 3 ? 
+                                            <DownloadCertificado solucitudId={item.id as number} /> : 
                                             <DownloadCargo item={item} textos={textos} />
                                         }
                                     </CardContent>

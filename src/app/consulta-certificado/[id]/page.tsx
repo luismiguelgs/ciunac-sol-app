@@ -1,4 +1,4 @@
-import CertificadosService from "@/modules/consulta-certificado/services/certificados.service"
+import CertificadosService from "@/services/certificados.service"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Separator } from "@/components/ui/separator"
@@ -8,7 +8,7 @@ import waterMark from '@/assets/logo-ciunac-trans.png'
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertTriangle } from "lucide-react"
 import { Mail, Phone } from "lucide-react"
-import { ICertificado, ICertificadoNota } from "@/modules/consulta-certificado/interfaces/certificado.interface";
+import { ICertificado, ICertificadoNota } from "@/interfaces/certificado.interface";
 
 async function getCertificate(id:string): Promise<ICertificado | undefined> {
     const resData = await CertificadosService.selectItem(id)
