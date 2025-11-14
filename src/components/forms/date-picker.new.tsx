@@ -46,6 +46,9 @@ export function DatePicker({
     (_, i) => startYear + i
   )
 
+  const [currentMonth, setCurrentMonth] = React.useState<Date>(new Date())
+  const [open, setOpen] = React.useState(false)
+
   return (
 	<div className="mt-2">
     <FormField
@@ -55,7 +58,15 @@ export function DatePicker({
         <FormItem className="flex flex-col min-h-[70px]">
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Popover>
+            <Popover
+              open={open}
+              onOpenChange={(v) => {
+                setOpen(v)
+                if (v) {
+                  setCurrentMonth(field.value || new Date())
+                }
+              }}
+            >
               <PopoverTrigger asChild>
                 <Button
                   disabled={disabled}
@@ -73,10 +84,12 @@ export function DatePicker({
                 <div className="flex justify-between p-2">
                   <Select
                     onValueChange={(month) => {
-                      const newDate = setMonth(field.value || new Date(), months.indexOf(month))
+                      const base = field.value || currentMonth || new Date()
+                      const newDate = setMonth(base, months.indexOf(month))
+                      setCurrentMonth(newDate)
                       field.onChange(newDate)
                     }}
-                    value={months[getMonth(field.value || new Date())]}
+                    value={months[getMonth(currentMonth)]}
                   >
                     <SelectTrigger className="w-[110px]">
                       <SelectValue placeholder="Mes" />
@@ -89,10 +102,12 @@ export function DatePicker({
                   </Select>
                   <Select
                     onValueChange={(year) => {
-                      const newDate = setYear(field.value || new Date(), parseInt(year))
+                      const base = field.value || currentMonth || new Date()
+                      const newDate = setYear(base, parseInt(year))
+                      setCurrentMonth(newDate)
                       field.onChange(newDate)
                     }}
-                    value={getYear(field.value || new Date()).toString()}
+                    value={getYear(currentMonth).toString()}
                   >
                     <SelectTrigger className="w-[110px]">
                       <SelectValue placeholder="Año" />
@@ -108,12 +123,17 @@ export function DatePicker({
                 <Calendar
                   mode="single"
                   selected={field.value}
-                  onSelect={field.onChange}
+                  onSelect={(date) => {
+                    if (date) setCurrentMonth(date)
+                    field.onChange(date)
+                  }}
+                  onMonthChange={setCurrentMonth}
+                  month={currentMonth}
                   initialFocus
 				  //weekStartsOn={0}
                   locale={es}
-                  month={field.value || new Date()}
                 />
+
               </PopoverContent>
             </Popover>
           </FormControl>

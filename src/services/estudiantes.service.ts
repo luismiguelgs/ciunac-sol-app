@@ -1,5 +1,6 @@
 import IEstudiante from "@/interfaces/estudiante.interface";
-import { apiFetch } from "@/lib/api.service";
+import { apiFetch, apiFetchSafe } from "@/lib/api.service";
+import IEstudianteQ10 from "@/modules/solicitud-nuevo/interfaces/student.interface";
 
 
 const collection = 'estudiantes'
@@ -43,5 +44,10 @@ export default class EstudiantesService {
 
         const data = await apiFetch<IEstudiante>(`${collection}`, 'POST', estudianteData)
         return data
+    }
+
+    static async nuevoEstudianteQ10(body:IEstudianteQ10){
+        const result = await apiFetchSafe<IEstudianteQ10>(`q10/estudiantes`, 'POST', body)
+        return result
     }
 }

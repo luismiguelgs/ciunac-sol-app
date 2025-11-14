@@ -60,18 +60,22 @@ export function FinishForm({activeStep, setActiveStep, steps, student, saveNewSt
   	async function onSubmit() {	
 		//console.log(data)
         setLoading(true)
+        setState('SAVE')
         setOpen(true)
 
         const newStudent = await saveNewStudent(student)
 
-		if(newStudent.data.code === "400") {
+		if(newStudent.status === 400) {
 			setState('ERROR')
-			setMessage(`<strong>${newStudent.data.message} DNI:${student.Numero_identificacion}.</strong> Comuníquese con el administrador
+			setMessage(`${newStudent.body.message} DNI:${student.Numero_identificacion}. Comuníquese con el administrador
 				 del sistema al correo: ciunac.alumnosnuevos@unac.edu.pe`)
 			setLoading(false)
 		}
 		else{
+			// Cambiar estado a EMAIL y mantener el diálogo abierto mientras se envía
 			setState('EMAIL')
+			// Dar un respiro al event loop para que React repinte el cambio de imagen
+			await new Promise((r) => setTimeout(r, 0))
 			await EmailService.sendEmailRegister(student)
 			setLoading(false)
 			setOpen(false)

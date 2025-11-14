@@ -1,6 +1,6 @@
 import { DocumentType, Gender } from "@/lib/constants";
 
-export default interface IStudent {
+export default interface IEstudianteQ10 {
     Codigo_estudiante?: string;
     Primer_apellido: string;
     Segundo_apellido: string;
