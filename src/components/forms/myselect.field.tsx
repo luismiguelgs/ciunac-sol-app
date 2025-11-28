@@ -15,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { IEscuela } from "@/interfaces/types.interface"
 import { Control } from "react-hook-form"
 
 type Props = {
@@ -41,7 +40,7 @@ export function MySelect({name, label, control, options, placeholder,disabled, d
             render={({ field }) => (
                 <FormItem className="min-h-[70px]">
                     <FormLabel>{label}</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={disabled}>
+                    <Select onValueChange={field.onChange} value={field.value} disabled={disabled}>
                         <FormControl>
                             <SelectTrigger className="w-full overflow-hidden">
                                 <SelectValue placeholder={placeholder} className="text-ellipsis" />

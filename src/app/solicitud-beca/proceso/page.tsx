@@ -3,7 +3,7 @@ import { Stepper } from '@/components/stepper'
 import BasicData from '@/modules/solicitud-beca/components/basic-data'
 import { useSearchParams } from 'next/navigation' // 1. Importa useSearchParams
 import React from 'react' // Asegúrate de importar React si usas JSX
-import useSolicitudStore from '@/modules/solicitud-beca/stores/solicitud.store'
+import useSolicitudStore from '@/modules/solicitud-beca/stores/solicitud-beca.store'
 import { IBasicInfoSchema } from '@/modules/solicitud-beca/schemas/basic-data.schema'
 import Documents from '@/modules/solicitud-beca/components/documents'
 import { DocumentsFormValues } from '@/modules/solicitud-beca/schemas/documents.schema'
@@ -30,18 +30,18 @@ function BecaProcess()
                     setSolicitudField('escuela', values.escuela);
                     setSolicitudField('codigo', values.codigo);
                     setSolicitudField('direccion', values.direccion);
-                    setSolicitudField('celular', values.celular);
+                    setSolicitudField('telefono', values.celular);
                     setSolicitudField('tipo_documento', values.tipo_documento);
-                    setSolicitudField('dni', values.dni);
+                    setSolicitudField('numero_documento', values.dni);
                 }
                 break;
             case 1:
                 if (isDocumentsFormValues(values)) {
-                    setSolicitudField('img_cert_estudio', values.constancia_matricula);
-                    setSolicitudField('img_dni', values.historial_academico);
-                    setSolicitudField('img_voucher', values.constancia_tercio);
-                    setSolicitudField('img_cert_trabajo', values.carta_compromiso);
-                    setSolicitudField('certificado_trabajo', values.declaracion_jurada);
+                    setSolicitudField('constancia_matricula', values.constancia_matricula);
+                    setSolicitudField('historial_academico', values.historial_academico);
+                    setSolicitudField('contancia_tercio', values.constancia_tercio);
+                    setSolicitudField('carta_de_compromiso', values.carta_compromiso);
+                    setSolicitudField('declaracion_jurada', values.declaracion_jurada);
                 }
                 break;
         }

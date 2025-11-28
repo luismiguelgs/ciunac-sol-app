@@ -1,11 +1,11 @@
 import Isolicitud, { ISolicitudRes } from '@/interfaces/solicitud.interface';
 import { apiFetch } from '@/lib/api.service';
 import { obtenerPeriodo } from '@/lib/utils';
+import ISolicitudBeca from '@/modules/solicitud-beca/interfaces/solicitudbeca.interface';
 
 export default class SolicitudesService 
 {
     private static collection = 'solicitudes'
-    
     
     public static async searchItemByDni(dni:string):Promise<ISolicitudRes[]>
     {
@@ -38,5 +38,18 @@ export default class SolicitudesService
 		const response = await apiFetch<ISolicitudRes>(`${this.collection}/${id}`, 'GET')
 		return response
 	}
-    
+
+	public static async newBeca(data:ISolicitudBeca):Promise<string| undefined>
+    {
+        const solicitudData = {
+            ...data,
+			apellidos: data.apellidos.toLocaleUpperCase(),
+			nombres: data.nombres.toLocaleUpperCase(),
+			direccion: data.direccion.toLocaleUpperCase(),
+            periodo: obtenerPeriodo(),
+        }
+        const response = await apiFetch<ISolicitudBeca>(`solicitudbecas`, 'POST', solicitudData)
+		console.log(response)
+        return response?._id
+    }
 }

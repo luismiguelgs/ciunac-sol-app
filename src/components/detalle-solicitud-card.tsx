@@ -9,6 +9,7 @@ import useSolicitudes from '@/hooks/useSolicitudes'
 import useFacultades from '@/hooks/useFacultades'
 import useEscuelas from '@/hooks/useEscuelas'
 import useSubjects from '@/hooks/useSubjects'
+import ISolicitudBeca from '@/modules/solicitud-beca/interfaces/solicitudbeca.interface'
 
 function detalleSolicitud(titulo:string, valor:string|undefined, link:boolean = false) {
     return (
@@ -34,6 +35,14 @@ export default function DetalleSolicitudCard({solicitud, tipo}:Props)
     const facultades  = useFacultades()//useStore(useFacultiesStore, (state) => state.faculties)
     const escuelas = useEscuelas()//useStore(useEscuelasStore, (state) => state.escuelas)
     const { data: idiomas } = useSubjects()//useStore(useSubjectsStore, (state) => state.subjects)
+
+    const obtenerTipoSolicitud = ()=>{
+        if(tipo=='BECA'){
+            return 'SOLICITUD DE BECA'
+        }else{
+            return tiposSolicitud?.filter((cer)=> cer.id === Number(solicitud.tipo_solicitud))[0]?.solicitud
+        }
+    }
     
     if (!solicitud) {
         return <div>Loading...</div>;
@@ -59,13 +68,13 @@ export default function DetalleSolicitudCard({solicitud, tipo}:Props)
                     </CardHeader>
                     <CardContent className="space-y-2 relative">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm md:text-base">
-                            {detalleSolicitud('Estado', solicitud.estado)}
-                            {detalleSolicitud('Tipo de Solicitud', tiposSolicitud?.filter((cer)=> cer.id === Number(solicitud.tipo_solicitud))[0]?.solicitud)}
-                            {detalleSolicitud('Apellidos', solicitud.apellidos)}
-                            {detalleSolicitud('Nombres', solicitud.nombres)}
-                            {detalleSolicitud('Celular', solicitud.celular)}
+                            {detalleSolicitud('Estado', solicitud.estado ? solicitud.estado : 'PENDIENTE')}
+                            {detalleSolicitud('Tipo de Solicitud', obtenerTipoSolicitud())}
+                            {detalleSolicitud('Apellidos', solicitud.apellidos?.toLocaleUpperCase())}
+                            {detalleSolicitud('Nombres', solicitud.nombres?.toLocaleUpperCase())}
+                            {detalleSolicitud('Celular', solicitud.celular ? solicitud.celular : (solicitud as ISolicitudBeca).telefono)}
                             {detalleSolicitud('Tipo de Documento', solicitud.tipo_documento)}
-                            {detalleSolicitud('Documento', solicitud.dni)}
+                            {detalleSolicitud('Documento', solicitud.dni ? solicitud.dni : (solicitud as ISolicitudBeca).numero_documento)}
                             {detalleSolicitud('Facultad', facultades?.filter((cer)=> cer.id === Number(solicitud.facultad))[0]?.nombre ?? '')}
                             {detalleSolicitud('Escuela', escuelas?.filter((cer)=> cer.id === Number(solicitud.escuela))[0]?.nombre ?? '')}
                             {detalleSolicitud('Código', solicitud.codigo)}
@@ -101,11 +110,11 @@ export default function DetalleSolicitudCard({solicitud, tipo}:Props)
                                 </React.Fragment>
                             )}
                             {tipo === 'BECA' && (<React.Fragment>
-                                {detalleSolicitud('Constancia de Matrícula', solicitud.img_cert_estudio, true)}
-                                {detalleSolicitud('Historial Académico', solicitud.img_dni, true)}
-                                {detalleSolicitud('Constancia de Tercio / Quinto Superior', solicitud.img_voucher, true)}
-                                {detalleSolicitud('Carta de Compromiso', solicitud.img_cert_trabajo, true)}
-                                {detalleSolicitud('Declaración Jurada', solicitud.certificado_trabajo, true)}   
+                                {detalleSolicitud('Constancia de Matrícula', (solicitud as ISolicitudBeca).constancia_matricula, true)}
+                                {detalleSolicitud('Historial Académico', (solicitud as ISolicitudBeca).historial_academico, true)}
+                                {detalleSolicitud('Constancia de Tercio / Quinto Superior', (solicitud as ISolicitudBeca).contancia_tercio, true)}
+                                {detalleSolicitud('Carta de Compromiso', (solicitud as ISolicitudBeca).carta_de_compromiso, true)}
+                                {detalleSolicitud('Declaración Jurada', (solicitud as ISolicitudBeca).declaracion_jurada, true)}   
                             </React.Fragment>)}
                         </div>
                     </CardContent>

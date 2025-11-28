@@ -7,7 +7,7 @@ import { StepperControl } from "@/components/stepper";
 import React from "react";
 import { Download } from "lucide-react";
 import Link from "next/link";
-import useStore from "../stores/solicitud.store";
+import useStore from "../stores/solicitud-beca.store";
 
 import {
     FileText,
@@ -89,26 +89,31 @@ export default function Documents({activeStep, setActiveStep, steps, handleNext}
                             <FileUploaderCard 
                                 name="constancia_matricula" 
                                 label="Constancia de Matrícula" 
-                                dni={solicitud.dni}
+                                dni={solicitud.numero_documento}
+                                folder="becas"
                                 icon={FileText}/>
                             <FileUploaderCard 
                                 name="historial_academico" 
                                 label="Historial Académico" 
-                                dni={solicitud.dni}
+                                dni={solicitud.numero_documento}
+                                folder="becas"
                                 icon={BookOpenCheck} />
                              <FileUploaderCard 
+                                folder="becas"
                                 name="constancia_tercio" 
-                                dni={solicitud.dni}
+                                dni={solicitud.numero_documento}
                                 label="Constancia de Tercio/Quinto Superior" 
                                 icon={ClipboardList}/>
                             <FileUploaderCard 
+                                folder="becas"
                                 name="carta_compromiso" 
-                                dni={solicitud.dni}
+                                dni={solicitud.numero_documento}
                                 label="Carta de Compromiso" 
                                 icon={Paperclip}/>
                             <FileUploaderCard 
+                                folder="becas"
                                 name="declaracion_jurada" 
-                                dni={solicitud.dni}
+                                dni={solicitud.numero_documento}
                                 label="Declaración Jurada" 
                                 icon={UploadCloud}/>  
                         </div>

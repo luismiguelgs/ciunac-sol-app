@@ -10,11 +10,11 @@ export interface UploadResponse {
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const apiKey: string = process.env.NEXT_PUBLIC_API_KEY!;
 
-export async function uploadFile(file:File, folder: 'dnis' | 'vouchers' |'becas', dni:string='') {
+export async function uploadFile(file:File, folder: 'dnis' | 'vouchers' |'becas', dni:string='', name:string='') {
 	try{
 		const formData = new FormData();
 		formData.append('file', file);
-		if (dni) formData.append('nombre', getFileName(dni, folder, file.name));	
+		if (dni) formData.append('nombre', getFileName(dni, folder, name));	
 
 		const response = await fetch(`${API_URL}/upload/${folder}`, {
 			method: 'POST',

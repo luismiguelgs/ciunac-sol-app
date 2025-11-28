@@ -10,13 +10,13 @@ export const basicInfoSchema = z.object({
     nombres: z.string().min(2,msg.required).trim(),
     facultad: z.string().min(1,msg.required).trim(),
     escuela: z.string().min(1,msg.required).trim(),
-    codigo: z.string().min(1,msg.required).trim(),
-    tipo_documento: z.enum(["PE01","PE02"]),
     direccion: z.string().trim(),
+    codigo: z.string().min(1,msg.required).trim(),
+    tipo_documento: z.enum(["DNI","CE","PASAPORTE"]),
     celular: z.string().min(9,msg.required).max(9, msg.invalid(9)).trim(),
     dni: z.string().trim()
 }).superRefine((data, ctx) => {
-	const reqLength = data.tipo_documento === "PE01" ? 8 : 9;
+	const reqLength = data.tipo_documento === "DNI" ? 8 : 9;
 	if(data.dni.length !== reqLength) ctx.addIssue({
 		code: z.ZodIssueCode.custom,
 		message: msg.invalid(reqLength),
@@ -31,9 +31,9 @@ export const initialValues:IBasicInfoSchema = {
     nombres: "",
     facultad: "",
     escuela: "",
-    codigo: "",
-    tipo_documento: "PE01",
     direccion: "",
+    codigo: "",
+    tipo_documento: "DNI",
     dni: "",
     celular: "",
 }

@@ -1,6 +1,6 @@
 import { StepperControl } from '@/components/stepper'
 import React from 'react'
-import useStore from "../stores/solicitud.store"
+import useStore from "../stores/solicitud-beca.store"
 import Image from 'next/image'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -10,7 +10,6 @@ import SwithField from '@/components/forms/switch.field'
 import MyAlert from '@/components/forms/myAlert'
 import { toast } from "sonner"
 import SolicitudesService from '@/services/solicitudes.service'
-import Isolicitud from '@/interfaces/solicitud.interface'
 import EmailService from '@/services/email.service'
 import GeneralDialog from '@/components/dialogs/general-dialog'
 import { Button } from '@/components/ui/button'
@@ -19,6 +18,9 @@ import { useRouter } from 'next/navigation'
 import { ExternalLink } from 'lucide-react'; // Asegúrate de importar el icono que deseas usar
 import DetalleSolicitudCard from '@/components/detalle-solicitud-card'
 import Link from 'next/link'
+import ISolicitudBeca from '../interfaces/solicitudbeca.interface'
+import useFacultades from '@/hooks/useFacultades'
+import useEscuelas from '@/hooks/useEscuelas'
 
 type Props = {
     activeStep : number
@@ -28,7 +30,9 @@ type Props = {
 
 export default function Register({activeStep, setActiveStep, steps}:Props) 
 {
-    const router = useRouter()
+    const facultades = useFacultades();
+    const escuelas = useEscuelas();
+    const router = useRouter();
     const [loading, setLoading] = React.useState<boolean>(false)
     const [open, setOpen] = React.useState<boolean>(false)
     const [state, setState] = React.useState<'SAVE'|'EMAIL'|'ERROR'>('SAVE')
@@ -40,6 +44,8 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
         resolver: zodResolver(finalSchema),
         defaultValues: initialValues,
     })
+    const info = form.watch('info')
+    const terminos = form.watch('terminos')
 
     const onSubmit = async (data: IFinalSchema) => {
         if(!data.info || !data.terminos){
@@ -51,7 +57,14 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
             setState('SAVE')
             setOpen(true)
             //guarda la informacion en la base de datos
-            const response = await SolicitudesService.newItem(solicitud as Isolicitud)
+            const newBeca = {
+                ...solicitud,
+                facultad: facultades?.find((f) => f.id === Number(solicitud.facultad))?.nombre,
+                facultadId: Number(solicitud.facultad),
+                escuela: escuelas?.find((f) => f.id === Number(solicitud?.escuela))?.nombre,
+                escuelaId: Number(solicitud?.escuela),
+            }
+            const response = await SolicitudesService.newBeca(newBeca as ISolicitudBeca)
             if(!response){
                 setState('ERROR')
                 setMessage('Error al guardar la solicitud')
@@ -106,7 +119,7 @@ export default function Register({activeStep, setActiveStep, steps}:Props)
                         steps={steps} 
                         setActiveStep={setActiveStep}
                         type="submit"
-                        disabled={loading}
+                        disabled={loading || !(info && terminos)}
                     />
                 </form>
             </Form>

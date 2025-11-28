@@ -6,11 +6,11 @@ import { StepperControl } from "@/components/stepper"
 import InputField from "@/components/forms/input.field"
 import { RadioGroupField } from "@/components/forms/radio-group.field"
 import { useMask } from '@react-input/mask';
-import useStore from "../stores/solicitud.store"
+import useStore from "../stores/solicitud-beca.store"
 import SelectFacultad from "@/components/forms/select-facultad.field"
 import { MySelect } from "@/components/forms/myselect.field"
-import { ESCUELAS } from "@/lib/constants" // Asumiendo que ESCUELAS tiene { value: string, label: string, facultad: string }[]
 import React from "react" // Importa React para useEffect
+import useEscuelas from "@/hooks/useEscuelas"
 
 type Props = {
     activeStep : number
@@ -22,6 +22,7 @@ type Props = {
 export default function BasicData({activeStep, handleNext, steps, setActiveStep}:Props)
 {
     const { solicitud } = useStore();
+    const escuelas = useEscuelas()
     const phoneRef = useMask({ mask: '_________', replacement: { _: /\d/ } });
     const codeRef = useMask({ mask: '__________', replacement: { _: /\d/ } });
     const dniRef = useMask({ mask: '_________', replacement: { _: /\d/ } });
@@ -36,10 +37,10 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
             facultad: solicitud?.facultad ?? initialValues.facultad,
             escuela: solicitud?.escuela ?? initialValues.escuela,
             codigo: solicitud?.codigo ?? initialValues.codigo,
-            tipo_documento: solicitud?.tipo_documento ?? 'PE01',
-            direccion: solicitud.direccion ?? initialValues.direccion,
-            dni: solicitud.dni ?? initialValues.dni,
-            celular: solicitud.celular ?? initialValues.celular,
+            tipo_documento: solicitud?.tipo_documento ? solicitud.tipo_documento : initialValues.tipo_documento,
+            direccion: solicitud?.direccion ?? initialValues.direccion,
+            dni: solicitud.numero_documento ?? initialValues.dni,
+            celular: solicitud.telefono ?? initialValues.celular,
         }
     })
 
@@ -52,8 +53,8 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
             return []; // Si no hay facultad seleccionada, no mostrar escuelas
         }
         // Asume que cada escuela en ESCUELAS tiene una propiedad 'facultad' que coincide con el 'value' de la facultad
-        return ESCUELAS.filter(escuela => escuela.facultad === selectedFacultad);
-    }, [selectedFacultad]);
+        return escuelas?.filter(escuela => escuela.facultadId === Number(selectedFacultad));
+    }, [selectedFacultad, escuelas]);
 
     // 3. Opcional: Resetea el campo 'escuela' cuando cambia la facultad
     React.useEffect(() => {
@@ -65,6 +66,7 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
 
 
     const onSubmit = (data:IBasicInfoSchema) => {
+        //alert(JSON.stringify(data))
         handleNext(data)
     }
 
@@ -99,6 +101,8 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
                         placeholder={selectedFacultad ? "Selecciona una escuela" : "Selecciona una facultad primero"}
                         options={filteredEscuelas} // Usa las escuelas filtradas
                         disabled={!selectedFacultad} // Deshabilita si no hay facultad seleccionada
+                        getOptionValue={(item) => String(item.id)}
+                        getOptionLabel={(item) => item.nombre}
                     />
                     <InputField
                         label="Código"
@@ -124,8 +128,9 @@ export default function BasicData({activeStep, handleNext, steps, setActiveStep}
                         label="Tipo de Documento"
                         name="tipo_documento"
                         options={[
-                            { value: "PE01", label: "Documento de Identidad" },
-                            { value: "PE02", label: "Carnet de Extranjería" },
+                            { value: "DNI", label: "Documento de Identidad (DNI)" },
+                            { value: "CE", label: "Carnet de Extranjería" },
+                            { value: "PASAPORTE", label: "Pasaporte" },
                         ]}
                         control={form.control}
                     />
